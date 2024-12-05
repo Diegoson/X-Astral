@@ -1,10 +1,14 @@
-const { CreatePlug, runCommand } = require('../lib/commands');
+const { CreatePlug } = require('../lib/commands');
 
 CreatePlug({
     command: 'ping',
     category: 'Utility',
-    desc: 'Check bot status',
+    desc: 'latency',
     execute: async (message) => {
-        await message.reply('Pong!');
+        const start = Date.now(); 
+        const mz = Date.now() - start; 
+        const latency = se.createdTimestamp - message.createdTimestamp; 
+        await message.reply(`Pong! ${mz}ms`);
     }
 });
+            
