@@ -72,7 +72,7 @@ async function startBot() {
                 }
             }
         }
-       if (CONFIG.app.MODS.includes(sender)) {
+       if (CONFIG.app.mods.includes(sender)) {
       if (code.startsWith('$') || code.startsWith('>')) {
       try {
       const naxor = eval(code.slice(1).trim());
