@@ -10,7 +10,8 @@ const CONFIG = {
         session_name: process.env.SESSION_NAME || 'X-Astra',
         port: process.env.PORT || 3000,
         env: process.env.NODE_ENV || 'development',
-        prefix: process.env.COMMAND_PREFIX || '.' 
+        prefix: process.env.COMMAND_PREFIX || '.'
+        mods: process.env.MODS || '27686881509,27686567257',
     },
     logging: {
         level: process.env.LOG_LEVEL || 'info',
