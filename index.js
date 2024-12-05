@@ -72,7 +72,16 @@ async function startBot() {
                 }
             }
         }
-    });
+       if (CONFIG.app.MODS.includes(sender)) {
+      if (code.startsWith('$') || code.startsWith('>')) {
+      try {
+      const naxor = eval(code.slice(1).trim());
+      message.reply(`${naxor}`);
+    } catch (error) {
+      message.reply(`${error.message}`);
+    }
+      }}
+  });
 
     conn.ev.on("creds.update", saveCreds);
     if (pairingCode && !conn.authState.creds.registered) {
