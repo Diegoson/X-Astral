@@ -11,11 +11,9 @@ async function sendTemplas(message, id, participant, template, imageurl = null) 
         text: template(username, timestamp), 
         mentions: [participant]
     };
-    
     if (imageurl) {
         content.image = { url: imageurl };
     }
-
     await message.send(id, content);
 }
 
@@ -26,21 +24,18 @@ const templates = {
         │ *Joined at*: ${timestamp}
         │ *Enjoy your stay*
         ╰─────`,
-    
     goodbye: (username, timestamp) => `
         ╭─────
         │ *Goodbye*, ${username}
         │ *Left at*: ${timestamp}
         │ *See you again*
         ╰─────`,
-    
     promote: (username) => `
         ╭─────
         │ *${username}*
         │ *Youve been promoted*
         │ *Status*: Admin
         ╰─────`,
-    
     demote: (username) => `
         ╭─────
         │ *${username}*
@@ -57,5 +52,4 @@ const sendPromote = (message, id, participant) =>
     sendTemplas(message, id, participant, templates.promote);
 const sendDemote = (message, id, participant) => 
     sendTemplas(message, id, participant, templates.demote);
-
 module.exports = { sendWelcome, sendGoodbye, sendPromote, sendDemote };
