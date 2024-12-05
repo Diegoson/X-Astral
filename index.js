@@ -58,16 +58,16 @@ async function startBot() {
         }
     }
 
-    conn.ev.on("messages.upsert", async ({ messages, type }) => {
+    conn.ev.on("messages.upsert", async ({ m, type }) => {
         if (type === "notify") {
-            for (const msg of messages) {
-                const m = await serialize(conn, msg);
-                const { sender, isGroup } = m; 
-                log("info", `[USER]:${sender}\n [MESSAGE]: ${m.text || "Media/Other"}\n [CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}`);
-                if (m.text) {
-                    const command = commands.find(c => c.command === m.text.trim().toLowerCase());
+            for (const msg of m) {
+                const message = await serialize(conn, msg);
+                const { sender, isGroup } = message; 
+                log("info", `[USER]:${sender}\n [MESSAGE]: ${message.text || "Media/Other"}\n [CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}`);
+                if (message.text) {
+                    const command = commands.find(c => c.command === message.text.trim().toLowerCase());
                     if (command) {
-                        await command.execute(m);
+                        await command.execute(message);
                     }
                 }
             }
