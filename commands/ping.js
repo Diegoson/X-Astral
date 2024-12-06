@@ -6,9 +6,8 @@ CreatePlug({
     desc: 'latency',
     execute: async (message) => {
         const start = Date.now(); 
-        const mz = Date.now() - start; 
-        const latency = se.createdTimestamp - message.createdTimestamp; 
-        await message.reply(`Pong! ${mz}ms`);
+        const send = await message.reply('Ping..'); 
+        const latency = send.createdTimestamp - message.createdTimestamp;
+        await send.edit(`Pong! ${latency}ms.`);
     }
 });
-            
