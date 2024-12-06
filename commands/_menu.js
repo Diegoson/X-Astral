@@ -1,4 +1,5 @@
 const { commands, CreatePlug } = require('../lib/commands');
+const CONFIG = require('../config');
 
 CreatePlug({
     command: 'menu',
