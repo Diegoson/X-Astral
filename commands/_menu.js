@@ -8,7 +8,7 @@ CreatePlug({
     command: 'menu',
     category: 'general',
     desc: 'types',
-    execute: async (message) => {        
+    execute: async (message,conn) => {        
       const gorized = commands.reduce((acc, cmd) => {
           if (!acc[cmd.category]) acc[cmd.category] = [];
             acc[cmd.category].push(cmd.command);
@@ -32,7 +32,7 @@ CreatePlug({
         for (const [category, cmds] of Object.entries(gorized)) {
             msg += package(category, cmds) + '\n\n';
   }
-      await channel.send(message.user, { text: msg.trim() });
+      await conn.send(message.user, { text: msg.trim() });
     }
 });
   
