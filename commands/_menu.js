@@ -1,4 +1,5 @@
 const { commands, CreatePlug } = require('../lib/commands');
+const { get_current_date } = require('../lib/index');
 const CONFIG = require('../config');
 
 CreatePlug({
@@ -15,7 +16,7 @@ CreatePlug({
   return `╭──╼【 𝐗-𝐀𝐒𝐓𝐑𝐀𝐋 】\n` +
 `┃ ✦ Prefix  : ${CONFIG.app.prefix}\n` +
 `┃ ✦ User    : ${message.user}\n` +
-`┃ ✦ Date    : Active\n` +
+`┃ ✦ Date    : ${get_current_date}\n` +
 `┃ ✦ Version : ${CONFIG.app.version}\n` +
 `╰──────────╼`;
         };
