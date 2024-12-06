@@ -4,20 +4,29 @@ CreatePlug({
     command: 'alive',
     category: 'general',
     desc: 'alive',
-    execute: async (message,conn) => {
-        const platform = process.platform; 
-        const runtime = process.version; 
-        const uptime = process.uptime(); 
-        const usage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2); 
-        const negro = `_*Hy ${message.user}, Im alive*_
-*_PLATFORM_:* \`${platform}\`
-*_RUNTIME_:* \`Node.js ${runtime}\`
-*_UPTIME_:* \`${Math.floor(uptime / 60)}m ${Math.floor(uptime % 60)}s\`
-*_MEMORY_:* \`${usage}MB\`
+    execute: async (message, conn) => {
+        try {
+            const platform = process.platform;
+            const runtime = process.version;
+            const uptime = process.uptime();
+            const usage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
+     const status = `╭───╼〔*Bot Status*〕
+            
+🟢 *Bot is Alive*
+          
+🟢 *PLATFORM:* \`${platform}\`                      
+🟢 *UPTIME:* \`${Math.floor(uptime / 60)}m ${Math.floor(uptime % 60)}s\`     
+🟢 *MEMORY:* \`${usage}MB\`
 
-_ Type \`alive\` again to refresh the status_`;
-        await conn.send(message.user, { text: negro }
-        );
+╰──────────╼`;
+            const ima = 'https://f.uguu.se/BuFAPRQO.jpg';
+            await conn.send(message.user, {
+                image: { url: ima },
+                caption: status,
+            });
+        } catch (error) {
+            console.error(error);
+        }
     }
 });
-  
+        
