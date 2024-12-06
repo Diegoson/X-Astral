@@ -2,7 +2,7 @@ const { CreatePlug } = require('../lib/commands');
 
 CreatePlug({
     command: 'ping',
-    category: 'Utility',
+    category: 'mics',
     desc: 'latency',
     execute: async (message) => {
         const start = Date.now(); 
