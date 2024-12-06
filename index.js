@@ -99,7 +99,7 @@ async function startBot() {
 
     conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
         for (const participant of participants) {
-            log("info", `Group update: ${action} ${participant} in ${id}`);
+            log("info", `GROUP: ${action} ${participant} => ${id}`);
             if (action === "add") await sendWelcome(conn, id, participant);
             else if (action === "remove") await sendGoodbye(conn, id, participant);
             else if (action === "promote") await sendPromote(conn, id, participant);
