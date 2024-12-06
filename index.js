@@ -68,7 +68,7 @@ async function startBot() {
                     }
                     if (text.startsWith('$') || text.startsWith('>')) {
                         try {
-                            const result = await eval((async()=>{text.slice(1).trim()})());
+                            const result = await eval(text.slice(1).trim());
                             return message.reply(`${result}`);
                         } catch (error) {
                             message.reply(`${error.message}`);
