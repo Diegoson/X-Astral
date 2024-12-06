@@ -23,7 +23,7 @@ CreatePlug({
 
         const package = (category, cmds) => {
   return `╭───╼【 *${monospace(category.toUpperCase())}* 】\n` +
-            cmds.map(cmd => `┃ ∘ ${monospace(cmd)}`).join('\n') + '\n' +
+            cmds.map(cmd => `┃ ∘ ${monospace(cmd.toLowerCase)}`).join('\n') + '\n' +
          `╰──────────╼`;
       };
     let msg = namo() + '\n\n'; 
