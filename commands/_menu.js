@@ -32,7 +32,7 @@ CreatePlug({
         for (const [category, cmds] of Object.entries(gorized)) {
             msg += package(category, cmds) + '\n\n';
   }
-      await conn.send(message.user, { text: msg.trim() });
+      await conn.send(message.user, msg.trim());
     }
 });
   
