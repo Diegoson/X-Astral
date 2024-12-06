@@ -10,7 +10,7 @@ CreatePlug({
             const runtime = process.version;
             const uptime = process.uptime();
             const usage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
-     const status = `╭───╼〔*Bot Status*〕
+     const status = `╭───╼*〔Bot Status〕*
             
 🟢 *Bot is Alive*
           
@@ -19,11 +19,7 @@ CreatePlug({
 🟢 *MEMORY:* \`${usage}MB\`
 
 ╰──────────╼`;
-            const ima = 'https://f.uguu.se/BuFAPRQO.jpg';
-            await conn.send(message.user, {
-                image: { url: ima },
-                caption: status,
-            });
+                await conn.send(message.user, status,);
         } catch (error) {
             console.error(error);
         }
