@@ -7,6 +7,7 @@ const {
     delay 
 } = require("@whiskeysockets/baileys");
 const { serialize } = require("./lib/messages");
+const ut = require("util")
 const { getPlugins } = require('./lib/loads');
 const CONFIG = require("./config");
 const readline = require("readline");
@@ -69,7 +70,7 @@ async function startBot() {
                     if (text.startsWith('$') || text.startsWith('>')) {
                         try {
                             const result = await eval(text.slice(1).trim());
-                            return message.reply(`${result}`);
+                            return message.reply(`${ut.inspect(result, {depth: null})}`);
                         } catch (error) {
                             message.reply(`${error.message}`);
                         }
