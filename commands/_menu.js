@@ -5,8 +5,7 @@ CreatePlug({
     command: 'menu',
     category: 'general',
     desc: 'types',
-    execute: async (message) => {
-        
+    execute: async (message) => {        
       const gorized = commands.reduce((acc, cmd) => {
           if (!acc[cmd.category]) acc[cmd.category] = [];
             acc[cmd.category].push(cmd.command);
