@@ -1,5 +1,7 @@
 const { commands, CreatePlug } = require('../lib/commands');
-const { get_current_date, monospace } = require('../lib/index');
+const { get_current_date, 
+       monospace 
+      } = require('../lib/index');
 const CONFIG = require('../config');
 
 CreatePlug({
