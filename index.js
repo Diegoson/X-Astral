@@ -22,7 +22,6 @@ const { makeInMemoryStore } = require("@whiskeysockets/baileys");
 const { commands } = require("./lib/commands"); 
 
 global.SESSION_ID = "session";
-
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -38,7 +37,7 @@ async function startBot() {
     const conn = makeWASocket({
         auth: state,
         version: (await fetchLatestBaileysVersion()).version,
-        printQRInTerminal: false, // Disable QR in terminal
+        printQRInTerminal: false, 
         browser: Browsers.macOS('Chrome'),
         logger: pino({ level: "silent" }),
     });
@@ -78,17 +77,15 @@ async function startBot() {
     });
 
     conn.ev.on("creds.update", saveCreds);
-
-    // Pairing code automation
     if (!conn.authState.creds.registered) {
         console.clear();
-        console.log(chalk.cyan('No previous session found. Starting pairing process.'));
+        console.log(chalk.cyan('Starting pairing process...'));
         let phoneNumber = await question(`   ${chalk.cyan('- Please enter your WhatsApp number')}: `);
         phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
         try {
             let code = await conn.requestPairingCode(phoneNumber);
             console.log(chalk.cyan(`Pairing Code: ${code}`));
-            console.log(chalk.cyan('Follow the instructions on WhatsApp to complete pairing.'));
+            console.log(chalk.cyan('Follow the instructions on WhatsApp to complete pairing'));
         } catch (error) {
             console.error(chalk.redBright('Error generating pairing code:'), error);
         }
