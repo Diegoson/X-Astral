@@ -9,6 +9,7 @@ const CONFIG = {
     app: {
         session_name: process.env.SESSION_NAME || 'X-Astra',
         port: process.env.PORT || 3000,
+        version: require('./package.json').version,
         env: process.env.NODE_ENV || 'development',
         prefix: process.env.COMMAND_PREFIX || '.',
         mods: process.env.MODS || '27686881509,27686567257'
@@ -18,8 +19,7 @@ const CONFIG = {
         format: process.env.LOG_FORMAT || 'combined'
     },
     api: {
-        version: process.env.API_VERSION || 'v4',
-        baseurl: process.env.BASE_URL || ' '
+       base_url: process.env.BASE_URL || ' '
     },
     error: {
         repli: 'Reply to something',
