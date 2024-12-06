@@ -13,12 +13,6 @@ const CONFIG = require("./config");
 const readline = require("readline");
 const chalk = require("chalk");
 const pino = require("pino");
-const {
-    sendWelcome,
-    sendGoodbye,
-    sendPromote,
-    sendDemote
-} = require("./groups");
 const { makeInMemoryStore } = require("@whiskeysockets/baileys");
 const { commands } = require("./lib/commands");
 
