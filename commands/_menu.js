@@ -13,7 +13,7 @@ CreatePlug({
             return acc;
 }, {});
     const namo = () => {
-  return `╭──╼【 𝐗-𝐀𝐒𝐓𝐑𝐀𝐋 】\n` +
+  return `╭──╼【 ${monospace(CONFIG.app.botname)} 】\n` +
 `┃ ✦ Prefix  : ${CONFIG.app.prefix}\n` +
 `┃ ✦ User    : ${message.user}\n` +
 `┃ ✦ Date    : ${get_current_date}\n` +
