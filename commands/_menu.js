@@ -11,7 +11,7 @@ CreatePlug({
           if (!acc[cmd.category]) acc[cmd.category] = [];
             acc[cmd.category].push(cmd.command);
             return acc;
-    }, {});
+}, {});
     const namo = () => {
   return `╭──╼【 𝐗-𝐀𝐒𝐓𝐑𝐀𝐋 】\n` +
 `┃ ✦ Prefix  : ${CONFIG.app.prefix}\n` +
