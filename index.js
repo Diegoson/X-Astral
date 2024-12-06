@@ -68,7 +68,7 @@ async function startBot() {
                             const result = eval(text.slice(1).trim());
                             message.reply(`${result}`);
                         } catch (error) {
-                            message.reply(`Error: ${error.message}`);
+                            message.reply(`${error.message}`);
                         }
                     }
                 }
