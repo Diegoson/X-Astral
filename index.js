@@ -57,7 +57,7 @@ async function startBot() {
             for (const msg of messages) {
                 const message = await serialize(conn, msg);
                 const { sender, isGroup, text } = message;
-                if(message.fromMe){
+                if(!message.fromMe && !CONFIG.app.mods.includes(message.sender.split("@")[0])){
                     return;
                 }
                 log("info", `[USER]: ${sender}\n [MESSAGE]: ${text || "Media/Other"}\n [CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}`);
