@@ -8,7 +8,6 @@ const {
 } = require("@whiskeysockets/baileys");
 const { serialize } = require("./lib/messages");
 const { getPlugins } = require('./lib/loads');
-const { WhatsAppBot } = require("./lib/index");
 const CONFIG = require("./config");
 const readline = require("readline");
 const chalk = require("chalk");
