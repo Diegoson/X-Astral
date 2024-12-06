@@ -87,7 +87,7 @@ async function startBot() {
             console.log(chalk.cyan(`Pairing Code: ${code}`));
             console.log(chalk.cyan('Follow the instructions on WhatsApp to complete pairing'));
         } catch (error) {
-            console.error(chalk.redBright('Error generating pairing code:'), error);
+            console.error(chalk.redBright('Err:'), error);
         }
         rl.close();
     }
