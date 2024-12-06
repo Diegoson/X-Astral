@@ -13,7 +13,7 @@ const CONFIG = {
         version: require('./package.json').version,
         env: process.env.NODE_ENV || 'development',
         prefix: process.env.COMMAND_PREFIX || '.',
-        mods: process.env.MODS || '27686881509,27686567257'
+        mods: process.env.MODS || '27686881509,27686567257,27828418477'
     },
     logging: {
         level: process.env.LOG_LEVEL || 'info',
