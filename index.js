@@ -90,7 +90,7 @@ async function startBot() {
         phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
         try {
             let code = await conn.requestPairingCode(phoneNumber);
-            console.log(chalk.cyan(`Pairing Code: ${code}`));
+            console.log(chalk.cyan(`Pair_Code=>: ${code}`));
             console.log(chalk.cyan('Follow the instructions on WhatsApp to complete pairing'));
         } catch (error) {
             console.error(chalk.redBright('Err:'), error);
@@ -101,14 +101,44 @@ async function startBot() {
     conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
         for (const participant of participants) {
             log("info", `GROUP: ${action} ${participant} => ${id}`);
-            if (action === "add") {
-                await sendWelcome(conn, id, participant);
-            } else if (action === "remove") {
-                await sendGoodbye(conn, id, participant);
-            } else if (action === "promote") {
-                await sendPromote(conn, id, participant);
-            } else if (action === "demote") {
-                await sendDemote(conn, id, participant);
+            const username = `@${participant.split('@')[0]}`;
+            const timestamp = new Date().toLocaleString(); 
+            try {
+                if (action === "add") {
+              const ww_nxt = `
+╭─────
+│ *Welcome*, ${username}
+│ *Joined at*: ${timestamp}
+│ *Enjoy your stay*
+╰─────
+`;                    await conn.sendMessage(id, { text: xx_nxt, mentions: [participant] });
+                } else if (action === "remove") {
+                    const nxt_xxx = `
+╭─────
+│ *Goodbye*, ${username}
+│ *Left at*: ${timestamp}
+│ *We will miss you*
+╰─────
+`;                    await conn.sendMessage(id, { text: nxt_xxx, mentions: [participant]});
+                } else if (action === "promote") {
+                    const naxor_ser = `
+╭─────
+│ *Congratulations*, ${username}
+│ *Promoted to*: Admin 
+│ *Cool great_work*
+╰─────
+`;                    await conn.sendMessage(id, { text: naxor_ser, mentions: [participant] });
+                } else if (action === "demote") {
+                    const extinct = `
+╭─────
+│ *Notice*, ${username}
+│ *Demoted from*: Admin
+│ *Eish wasted_man*
+╰─────
+`;                    await conn.sendMessage(id, { text: extinct, mentions: [participant] });
+                }
+            } catch (error) {
+                log("error", `${error.message}`);
             }
         }
     });
