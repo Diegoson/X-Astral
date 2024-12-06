@@ -16,7 +16,7 @@ CreatePlug({
 `┃ ✦ Prefix  : ${CONFIG.app.prefix}\n` +
 `┃ ✦ User    : ${message.user}\n` +
 `┃ ✦ Date    : Active\n` +
-`┃ ✦ Version : 1.0\n` +
+`┃ ✦ Version : ${CONFIG.app.version}\n` +
 `╰──────────╼`;
         };
 
