@@ -1,26 +1,26 @@
-const { 
-    default: makeWASocket, 
-    useMultiFileAuthState, 
-    fetchLatestBaileysVersion, 
-    DisconnectReason,  
-    Browsers, 
-    delay 
+const {
+    default: makeWASocket,
+    useMultiFileAuthState,
+    fetchLatestBaileysVersion,
+    DisconnectReason,
+    Browsers,
+    delay,
 } = require("@whiskeysockets/baileys");
 const { serialize } = require("./lib/messages");
-const ut = require("util")
+const ut = require("util");
 const { getPlugins } = require('./lib/loads');
 const CONFIG = require("./config");
 const readline = require("readline");
 const chalk = require("chalk");
 const pino = require("pino");
-const { 
-    sendWelcome, 
-    sendGoodbye, 
-    sendPromote, 
-    sendDemote 
+const {
+    sendWelcome,
+    sendGoodbye,
+    sendPromote,
+    sendDemote
 } = require("./groups");
 const { makeInMemoryStore } = require("@whiskeysockets/baileys");
-const { commands } = require("./lib/commands"); 
+const { commands } = require("./lib/commands");
 
 global.SESSION_ID = "session";
 const rl = readline.createInterface({
@@ -38,7 +38,7 @@ async function startBot() {
     const conn = makeWASocket({
         auth: state,
         version: (await fetchLatestBaileysVersion()).version,
-        printQRInTerminal: false, 
+        printQRInTerminal: false,
         browser: Browsers.macOS('Chrome'),
         logger: pino({ level: "silent" }),
     });
@@ -58,22 +58,24 @@ async function startBot() {
             for (const msg of messages) {
                 const message = await serialize(conn, msg);
                 const { sender, isGroup, text } = message;
-                if(!message.fromMe && !CONFIG.app.mods.includes(message.sender.split("@")[0])){
-                    return;
+                const isPrivate = CONFIG.app.mode === "public"; 
+                if (!isPrivate && !message.fromMe && !CONFIG.app.mods.includes(sender.split("@")[0])) {
+                    return; 
                 }
-                log("info", `[USER]: ${sender}\n [MESSAGE]: ${text || "Media/Other"}\n [CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}`);
-                if (text) {
-                    const command = commands.find(c => c.command === text.trim().toLowerCase());
-                    if (command) {
-                        await command.execute(message, conn);
-                    }
-                    if (text.startsWith('$') || text.startsWith('>')) {
-                        try {
-                            const result = await eval(text.slice(1).trim());
-                            return message.reply(`${ut.inspect(result, {depth: null})}`);
-                        } catch (error) {
-                            message.reply(`${error.message}`);
-                        }
+                 const control = CONFIG.app.prefix;
+                 let cmd_txt = text ? text.trim().toLowerCase() : null;
+                  if (cmd_txt && cmd_txt.startsWith(prefix)) {
+                    cmd_txt = cmd_txt.slice(prefix.length).trim();
+                }
+                  const command = commands.find(c => c.command === cmd_txt);
+                if (command) {
+                    await command.execute(message, conn);
+                } else if (cmd_txt?.startsWith('$') || cmd_txt?.startsWith('>')) {
+                    try {
+                        const result = await eval(cmd_txt.slice(1).trim());
+                        return message.reply(`${ut.inspect(result, { depth: null })}`);
+                    } catch (error) {
+                        message.reply(`${error.message}`);
                     }
                 }
             }
@@ -99,10 +101,15 @@ async function startBot() {
     conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
         for (const participant of participants) {
             log("info", `GROUP: ${action} ${participant} => ${id}`);
-            if (action === "add") await sendWelcome(conn, id, participant);
-            else if (action === "remove") await sendGoodbye(conn, id, participant);
-            else if (action === "promote") await sendPromote(conn, id, participant);
-            else if (action === "demote") await sendDemote(conn, id, participant);
+            if (action === "add") {
+                await sendWelcome(conn, id, participant);
+            } else if (action === "remove") {
+                await sendGoodbye(conn, id, participant);
+            } else if (action === "promote") {
+                await sendPromote(conn, id, participant);
+            } else if (action === "demote") {
+                await sendDemote(conn, id, participant);
+            }
         }
     });
 
@@ -110,9 +117,10 @@ async function startBot() {
         const { connection } = update;
         if (connection === "open") {
             console.log(chalk.greenBright('Connection established successfully!'));
-            const plugins = getPlugins(); 
+            const plugins = getPlugins();
         }
     });
 }
 
 startBot();
+        
