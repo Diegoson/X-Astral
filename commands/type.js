@@ -2,7 +2,7 @@ const { CreatePlug } = require('../lib/commands');
 
 CreatePlug({
     command: 'alive',
-    category: 'Utility',
+    category: 'general',
     desc: 'alive',
     execute: async (message) => {
         var platform = process.platform; 
