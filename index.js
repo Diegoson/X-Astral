@@ -106,7 +106,7 @@ async function startBot() {
             try {
                 if (action === "add") {
               const ww_nxt = `
-╭─────
+╭─────【 *welcome*
 │ *Welcome*, ${username}
 │ *Joined at*: ${timestamp}
 │ *Enjoy your stay*
@@ -114,7 +114,7 @@ async function startBot() {
 `;                    await conn.sendMessage(id, { text: xx_nxt, mentions: [participant] });
                 } else if (action === "remove") {
                     const nxt_xxx = `
-╭─────
+╭─────【 *goodbye*
 │ *Goodbye*, ${username}
 │ *Left at*: ${timestamp}
 │ *We will miss you*
@@ -122,7 +122,7 @@ async function startBot() {
 `;                    await conn.sendMessage(id, { text: nxt_xxx, mentions: [participant]});
                 } else if (action === "promote") {
                     const naxor_ser = `
-╭─────
+╭─────【 *promoted*
 │ *Congratulations*, ${username}
 │ *Promoted to*: Admin 
 │ *Cool great_work*
@@ -130,7 +130,7 @@ async function startBot() {
 `;                    await conn.sendMessage(id, { text: naxor_ser, mentions: [participant] });
                 } else if (action === "demote") {
                     const extinct = `
-╭─────
+╭─────【 *demoted*
 │ *Notice*, ${username}
 │ *Demoted from*: Admin
 │ *Eish wasted_man*
