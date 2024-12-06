@@ -110,7 +110,7 @@ async function startBot() {
 │ *Welcome*, ${username}
 │ *Joined at*: ${timestamp}
 │ *Enjoy your stay*
-╰─────
+╰─────∘
 `;                    await conn.sendMessage(id, { text: xx_nxt, mentions: [participant] });
                 } else if (action === "remove") {
                     const nxt_xxx = `
@@ -118,7 +118,7 @@ async function startBot() {
 │ *Goodbye*, ${username}
 │ *Left at*: ${timestamp}
 │ *We will miss you*
-╰─────
+╰─────∘
 `;                    await conn.sendMessage(id, { text: nxt_xxx, mentions: [participant]});
                 } else if (action === "promote") {
                     const naxor_ser = `
@@ -126,7 +126,7 @@ async function startBot() {
 │ *Congratulations*, ${username}
 │ *Promoted to*: Admin 
 │ *Cool great_work*
-╰─────
+╰─────∘
 `;                    await conn.sendMessage(id, { text: naxor_ser, mentions: [participant] });
                 } else if (action === "demote") {
                     const extinct = `
@@ -134,7 +134,7 @@ async function startBot() {
 │ *Notice*, ${username}
 │ *Demoted from*: Admin
 │ *Eish wasted_man*
-╰─────
+╰─────∘
 `;                    await conn.sendMessage(id, { text: extinct, mentions: [participant] });
                 }
             } catch (error) {
