@@ -1,5 +1,5 @@
 const { commands, CreatePlug } = require('../lib/commands');
-const { get_current_date } = require('../lib/index');
+const { get_current_date, monospace } = require('../lib/index');
 const CONFIG = require('../config');
 
 CreatePlug({
@@ -22,8 +22,8 @@ CreatePlug({
         };
 
         const package = (category, cmds) => {
-  return `╭───╼【 *${category.toUpperCase()}* 】\n` +
-            cmds.map(cmd => `┃ ∘ ${cmd}`).join('\n') + '\n' +
+  return `╭───╼【 *${monospace(category.toUpperCase())}* 】\n` +
+            cmds.map(cmd => `┃ ∘ ${monospace(cmd)}`).join('\n') + '\n' +
          `╰──────────╼`;
       };
     let msg = namo() + '\n\n'; 
