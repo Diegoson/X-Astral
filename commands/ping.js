@@ -6,8 +6,10 @@ CreatePlug({
     desc: 'latency',
     execute: async (message,conn) => {
         const start = new Date().getTime();  
+        await conn.send(message.user,'```Ping!```')
         const end = new Date().getTime();   
-        const latency = end - start;       
-        await conn.send(message.user, `Pong! ${latency}ms.`);
+           await conn.send(message.user,'*Pong!*\n ```' + (end - start) + '``` *ms*');
+
+        
     }
 });
