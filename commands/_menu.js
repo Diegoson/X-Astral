@@ -12,7 +12,7 @@ CreatePlug({
             return acc;
     }, {});
     const namo = () => {
-  return `╭──╼〔 𝐗-𝐀𝐒𝐓𝐑𝐀𝐋 〕\n` +
+  return `╭──╼【 𝐗-𝐀𝐒𝐓𝐑𝐀𝐋 】\n` +
 `┃ ✦ Prefix  : ${CONFIG.app.prefix}\n` +
 `┃ ✦ User    : ${message.user}\n` +
 `┃ ✦ Date    : Active\n` +
@@ -21,7 +21,7 @@ CreatePlug({
         };
 
         const package = (category, cmds) => {
-  return `╭───╼〔 *${category.toUpperCase()}* 〕\n` +
+  return `╭───╼【 *${category.toUpperCase()}* 】\n` +
             cmds.map(cmd => `┃ ∘ ${cmd}`).join('\n') + '\n' +
          `╰──────────╼`;
       };
