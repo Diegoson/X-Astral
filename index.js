@@ -61,11 +61,11 @@ async function startBot() {
                 if (cmd_txt && cmd_txt.startsWith(control)) {
                     cmd_txt = cmd_txt.slice(control.length).trim();
                 }
-                const [cmd, ...args] = cmd_txt ? cmd_txt.split(/\s+/) : [null];
+                const [cmd, ...match] = cmd_txt ? cmd_txt.split(/\s+/) : [null];
                 const command = commands.find(c => c.command === cmd);
                 if (command) {
                     try {
-                        await command.execute({ message, conn, args, isAdmin });
+                        await command.execute({ message, conn, match, isAdmin });
                     } catch (error) {
                         log("error", `${error.message}`);
                         message.reply(`${error.message}`);
