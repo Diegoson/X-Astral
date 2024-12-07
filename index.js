@@ -105,7 +105,7 @@ async function startBot() {
 │ *Joined at*: ${timestamp}
 │ *Enjoy your stay*
 ╰─────∘
-`;                    await conn.sendMessage(id, { text: xx_nxt, mentions: [participant] });
+`;                    await conn.sendMessage(id, { text: www_nxt, mentions: [participant] });
                 } else if (action === "remove") {
                     const nxt_xxx = `
 ╭─────【 *goodbye*
