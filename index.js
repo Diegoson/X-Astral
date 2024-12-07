@@ -147,13 +147,13 @@ async function startBot() {
         }
     });
 
- conn.ev.on("connection.update", (() => {
-    return async (update) => {
-        const { connection } = update;
-        if (connection === "open") {
-            console.log(chalk.greenBright('_Bot is now connected_'));
-            const plugins = getPlugins(); 
-        }
-    };
-})());
-            
+ conn.ev.on("connection.update", async (update) => {
+    const { connection } = update;
+    if (connection === "open") {
+        console.log(chalk.greenBright('_Bot is now connected_'));
+        const plugins = getPlugins(); 
+    }
+});
+
+startBot();
+}
