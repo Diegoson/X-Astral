@@ -147,32 +147,13 @@ async function startBot() {
         }
     });
 
-    conn.ev.on("connection.update", (() => {
-        let send_is_done = false; 
-        return async (update) => {
-            const { connection } = update;
-            if (connection === "open" && !send_is_done) {
-                console.log(chalk.greenBright('_Bot is now connected_'));
-                const name = CONFIG.app.botname;
-                const prefa = CONFIG.app.prefix;
-                const modi = CONFIG.app.mode;
-                const dune = `
-╭─────【 *CONNECTED* 】
-│ *Hello! Im online*
-│ *Bot Name*: ${name}
-│ *Prefix*: ${prefa}
-│ *Mode*: ${modi}
-│ *Danko_🍀*
-╰─────∘
-`;  
-              try {
-                    await conn.sendMessage(conn.user.id, { text: dune });
-                    send_is_done = true; 
-                } catch (error) {}
-                const plugins = getPlugins(); 
-            }
-        };
-    })());
-
-    startBot();
-}
+ conn.ev.on("connection.update", (() => {
+    return async (update) => {
+        const { connection } = update;
+        if (connection === "open") {
+            console.log(chalk.greenBright('_Bot is now connected_'));
+            const plugins = getPlugins(); 
+        }
+    };
+})());
+            
