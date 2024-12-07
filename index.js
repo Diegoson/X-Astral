@@ -105,7 +105,7 @@ async function startBot() {
 │ *Joined at*: ${timestamp}
 │ *Enjoy your stay*
 ╰─────∘
-`;                    await conn.sendMessage(id, { text: www_nxt, mentions: [participant] });
+`;                    await conn.sendMessage(id, { text: ww_nxt, mentions: [participant] });
                 } else if (action === "remove") {
                     const nxt_xxx = `
 ╭─────【 *goodbye* 】
@@ -113,7 +113,7 @@ async function startBot() {
 │ *Left at*: ${timestamp}
 │ *We will miss you*
 ╰─────∘
-`;                    await conn.sendMessage(id, { text: nxt_xxx, mentions: [participant]});
+`;          await conn.sendMessage(id, { text: nxt_xxx, mentions: [participant]});
                 } else if (action === "promote") {
                     const naxor_ser = `
 ╭─────【 *promoted* 】
@@ -121,7 +121,7 @@ async function startBot() {
 │ *Promoted to*: Admin 
 │ *Cool great_work*
 ╰─────∘
-`;                    await conn.sendMessage(id, { text: naxor_ser, mentions: [participant] });
+`;                   await conn.sendMessage(id, { text: naxor_ser, mentions: [participant] });
                 } else if (action === "demote") {
                     const extinct = `
 ╭─────【 *demoted* 】
@@ -129,7 +129,7 @@ async function startBot() {
 │ *Demoted from*: Admin
 │ *Eish wasted_man*
 ╰─────∘
-`;                    await conn.sendMessage(id, { text: extinct, mentions: [participant] });
+`;            await conn.sendMessage(id, { text: extinct, mentions: [participant] });
                 }
             } catch (error) {
                 log("error", `${error.message}`);
@@ -137,14 +137,32 @@ async function startBot() {
         }
     });
 
-    conn.ev.on("connection.update", async (update) => {
+    conn.ev.on("connection.update", (() => {
+    let send_is_done = false; 
+    return async (update) => {
         const { connection } = update;
-        if (connection === "open") {
-            console.log(chalk.greenBright('Connection established successfully!'));
-            const plugins = getPlugins();
+        if (connection === "open" && !send_is_done) {
+            console.log(chalk.greenBright('_Bot is now connected_'));
+            const name = CONFIG.app.botname;
+            const prefa = CONFIG.app.prefix;
+            const modi = CONFIG.app.mode;
+            const dune = `
+╭─────【 *CONNECTED* 】
+│ *Hello! Im online*
+│ *Bot Name*: ${name}
+│ *Prefix*: ${prefa}
+│ *Mode*: ${modi}
+│ *Danko_🍀*
+╰─────∘
+`;  try {
+      await conn.sendMessage(conn.user.id, { text: dun });
+              send_is_done = true; 
+            } catch (error) {}
+            const plugins = getPlugins(); 
         }
-    });
-}
+    };
+}));
+
 
 startBot();
         
