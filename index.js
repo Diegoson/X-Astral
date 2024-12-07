@@ -51,7 +51,7 @@ async function startBot() {
         if (type === "notify" && Array.isArray(messages)) {
             for (const msg of messages) {
                 const message = await serialize(conn, msg);
-                const { sender, isGroup, text } = message; 
+                const { sender, isGroup, text, isAdmin } = message; 
                 const isPrivate = CONFIG.app.mode === "public"; 
                 if (!isPrivate && !message.fromMe && !CONFIG.app.mods.includes(sender.split("@")[0])) {
                     return;
