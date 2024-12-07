@@ -58,8 +58,8 @@ async function startBot() {
                 }
                  const control = CONFIG.app.prefix;
                  let cmd_txt = text ? text.trim().toLowerCase() : null;
-                  if (cmd_txt && cmd_txt.startsWith(prefix)) {
-                    cmd_txt = cmd_txt.slice(prefix.length).trim();
+                  if (cmd_txt && cmd_txt.startsWith(control)) {
+                    cmd_txt = cmd_txt.slice(control.length).trim();
                 }
                   const command = commands.find(c => c.command === cmd_txt);
                 if (command) {
