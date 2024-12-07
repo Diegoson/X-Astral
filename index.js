@@ -48,33 +48,39 @@ async function startBot() {
     }
 
     conn.ev.on("messages.upsert", async ({ messages, type }) => {
-        if (type === "notify" && Array.isArray(messages)) {
-            for (const msg of messages) {
-                const message = await serialize(conn, msg);
-                const { sender, isGroup, text } = message;
-                const isPrivate = CONFIG.app.mode === "public"; 
-                if (!isPrivate && !message.fromMe && !CONFIG.app.mods.includes(sender.split("@")[0])) {
-                    return; 
+    if (type === "notify" && Array.isArray(messages)) {
+        for (const msg of messages) {
+            const message = await serialize(conn, msg);
+            const { sender, isGroup, text } = message; 
+            const isPrivate = CONFIG.app.mode === "public"; 
+            if (!isPrivate && !message.fromMe && !CONFIG.app.mods.includes(sender.split("@")[0])) {
+                return;
+            }
+            const control = CONFIG.app.prefix;
+            let cmd_txt = text ? text.trim().toLowerCase() : null;
+            if (cmd_txt && cmd_txt.startsWith(control)) {
+                cmd_txt = cmd_txt.slice(control.length).trim();
+            }
+            const [cmd, ...args] = cmd_txt ? cmd_txt.split(/\s+/) : [null];
+            const command = commands.find(c => c.command === cmd);
+            if (command) {
+                try {
+                    await command.execute({ message, conn, args, isAdmin });
+                } catch (error) {
+                    log("error", `${error.message}`);
+                    message.reply(`${error.message}`);
                 }
-                 const control = CONFIG.app.prefix;
-                 let cmd_txt = text ? text.trim().toLowerCase() : null;
-                  if (cmd_txt && cmd_txt.startsWith(control)) {
-                    cmd_txt = cmd_txt.slice(control.length).trim();
-                }
-                  const command = commands.find(c => c.command === cmd_txt);
-                if (command) {
-                    await command.execute(message, conn);
-                } else if (cmd_txt?.startsWith('$') || cmd_txt?.startsWith('>')) {
-                    try {
-                        const result = await eval(cmd_txt.slice(1).trim());
-                        return message.reply(`${ut.inspect(result, { depth: null })}`);
-                    } catch (error) {
-                        message.reply(`${error.message}`);
-                    }
+            } else if (cmd_txt?.startsWith('$') || cmd_txt?.startsWith('>')) {
+                try {
+                    const result = await eval(cmd_txt.slice(1).trim());
+                    return message.reply(`${ut.inspect(result, { depth: null })}`);
+                } catch (error) {
+                    message.reply(`${error.message}`);
                 }
             }
         }
-    });
+    }
+});
 
     conn.ev.on("creds.update", saveCreds);
     if (!conn.authState.creds.registered) {
