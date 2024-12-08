@@ -1,14 +1,14 @@
 const CONFIG = require("../config");
 const templates = {
     en: {
-        welcome: `
+        add: `
 ╭─────【 *Welcome* 】
 │ *Welcome*, {username}
 │ *Joined at*: {timestamp}
 │ *Enjoy your stay*
 ╰─────∘
 `,
-        goodbye: `
+        remove: `
 ╭─────【 *Goodbye* 】
 │ *Goodbye*, {username}
 │ *Left at*: {timestamp}
@@ -19,7 +19,7 @@ const templates = {
 ╭─────【 *Promoted* 】
 │ *Congratulations*, {username}
 │ *Promoted to*: Admin
-│ *Great work*
+│ *Great work🍀*
 ╰─────∘
 `,
         demote: `
@@ -31,14 +31,14 @@ const templates = {
 `,
     },
     es: {
-        welcome: `
+        add: `
 ╭─────【 *Bienvenido* 】
 │ *Bienvenido*, {username}
 │ *Unido en*: {timestamp}
 │ *¡Disfruta tu estadía*
 ╰─────∘
 `,
-        goodbye: `
+        remove: `
 ╭─────【 *Adiós* 】
 │ *Adiós*, {username}
 │ *Salida en*: {timestamp}
@@ -49,7 +49,7 @@ const templates = {
 ╭─────【 *Ascendido* 】
 │ *Felicidades*, {username}
 │ *Ascendido a*: Admin
-│ *¡Buen trabajo*
+│ *¡Buen trabajo🍀*
 ╰─────∘
 `,
         demote: `
@@ -61,7 +61,8 @@ const templates = {
 `,
     },
 };
-const cn_welcom = (action, username, timestamp) => {
+
+const getMessage = (action, username, timestamp) => {
     const language = CONFIG.app.language || "en";
     const template = templates[language]?.[action];
     if (!template) return null;
@@ -69,25 +70,6 @@ const cn_welcom = (action, username, timestamp) => {
         .replace("{username}", username)
         .replace("{timestamp}", timestamp);
 };
-const custom_cn = {
-    add: null,
-    remove: null,
-    promote: null,
-    demote: null,
-};
-const setCustom = (action, template) => {
-    if (custom_cn[action] !== undefined) {
-        custom_cn[action] = template;
-    }
-};
-const getMessage = (action, username, timestamp) => {
-    if (custom_cn[action]) {
-        return custom_cn[action]
-            .replace("{username}", username)
-            .replace("{timestamp}", timestamp);
-    }
-    return cn_welcome(action, username, timestamp);
-};
 
-module.exports = { getMessage, setCustom };
-                           
+module.exports = { getMessage };
+ 
