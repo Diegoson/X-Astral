@@ -9,6 +9,7 @@ const CONFIG = {
     app: {
         session_name: process.env.SESSION_NAME || 'X-Astra',
         port: process.env.PORT || 3000,
+        language: process.env.LANGUAGE || 'en',
         botname: process.env.BOTNAME || 'X-ASTRAL',
         version: require('./package.json').version,
         env: process.env.NODE_ENV || 'development',
