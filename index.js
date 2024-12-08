@@ -8,7 +8,7 @@ const {
 } = require("@whiskeysockets/baileys");
 const { serialize } = require("./lib/messages");
 const ut = require("util");
-const { getMessage, setCustom } = require('./cn_dat/group');
+const { getMessage, setCustom } = require('./cn_data/group');
 const { getPlugins } = require("./lib/loads");
 const CONFIG = require("./config");
 const readline = require("readline");
@@ -93,7 +93,7 @@ async function startBot() {
             let code = await conn.requestPairingCode(phoneNumber);
             console.log(chalk.cyan(`Pair_Code=>: ${code}`));
           } catch (error) {
-            log("error", : error);
+            log("error", error);
       }
         rl.close();
  }
