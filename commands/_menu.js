@@ -19,7 +19,7 @@ CreatePlug({
         const time = now.toLocaleTimeString('en-ZA', { timeZone: 'Africa/Johannesburg' });  
         return `╭──╼【 ${monospace(CONFIG.app.botname.toUpperCase())} 】\n` +
                `┃ ✦ Prefix  : ${CONFIG.app.prefix}\n` +
-               `┃ ✦ User    : ${message.user}\n` +
+               `┃ ✦ User    : ${message.pushName || message.user}\n` +
                `┃ ✦ Date    : ${date}\n` +  
                `┃ ✦ Time    : ${time}\n` +  
                `┃ ✦ Version : ${CONFIG.app.version}\n` +
