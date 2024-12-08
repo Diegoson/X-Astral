@@ -8,6 +8,7 @@ const {
 } = require("@whiskeysockets/baileys");
 const { serialize } = require("./lib/messages");
 const ut = require("util");
+const { getMessage, setCustom } = require('./cn_dat/group');
 const { getPlugins } = require("./lib/loads");
 const CONFIG = require("./config");
 const readline = require("readline");
@@ -75,80 +76,39 @@ async function startBot() {
                         } catch (error) {
                             message.reply(`${error.message}`);
                         }
-                    }
-                } catch (error) {
-                    log("error", `Error processing message: ${error.message}`);
+                    }} catch (error) {
+                    log("error", `${error.message}`);
                 }
             }
         }
     });
 
     conn.ev.on("creds.update", saveCreds);
-
     if (!conn.authState.creds.registered) {
         console.clear();
-        console.log(chalk.cyan('Starting pairing process...'));
+        console.log(chalk.cyan('Starting pairing process_num?...'));
         let phoneNumber = await question(`   ${chalk.cyan('- Please enter your WhatsApp number')}: `);
         phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
         try {
             let code = await conn.requestPairingCode(phoneNumber);
             console.log(chalk.cyan(`Pair_Code=>: ${code}`));
-            console.log(chalk.cyan('Follow the instructions on WhatsApp to complete pairing'));
-        } catch (error) {
-            console.error(chalk.redBright('Error:'), error);
-        }
+          } catch (error) {
+            log("error", : error);
+      }
         rl.close();
-    }
+ }
 
-    conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
+    conn.ev.on('group-participants.update', async ({ id, participants, action }) => {
         for (const participant of participants) {
-            log("info", `GROUP: ${action} ${participant} => ${id}`);
             const username = `@${participant.split('@')[0]}`;
             const timestamp = new Date().toLocaleString();
             try {
-                let messageText = "";
-
-                if (action === "add") {
-                    messageText = `
-╭─────【 *welcome* 】
-│ *Welcome*, ${username}
-│ *Joined at*: ${timestamp}
-│ *Enjoy your stay*
-╰─────∘
-`;
-                } else if (action === "remove") {
-                    messageText = `
-╭─────【 *goodbye* 】
-│ *Goodbye*, ${username}
-│ *Left at*: ${timestamp}
-│ *We will miss you*
-╰─────∘
-`;
-                } else if (action === "promote") {
-                    messageText = `
-╭─────【 *promoted* 】
-│ *Congratulations*, ${username}
-│ *Promoted to*: Admin 
-│ *Great work!*
-╰─────∘
-`;
-                } else if (action === "demote") {
-                    messageText = `
-╭─────【 *demoted* 】
-│ *Notice*, ${username}
-│ *Demoted from*: Admin
-│ *Stay positive!*
-╰─────∘
-`;
-                }
-
-                if (messageText) {
-                    await conn.sendMessage(id, { text: messageText, mentions: [participant] });
-                }
-            } catch (error) {
+            const mamo = getMessage(action, username, timestamp);
+                if (mamo) {
+                    await conn.sendMessage(id, { text: mamo, mentions: [participant] });
+                }} catch (error) {
                 log("error", `${error.message}`);
-            }
-        }
+            }}
     });
 
     conn.ev.on("connection.update", async (update) => {
