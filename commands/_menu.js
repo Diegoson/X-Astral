@@ -26,17 +26,17 @@ CreatePlug({
                `╰──────────╼`;
       };
 
-      const package = (category, cmds) => {
+      const pack = (category, cmds) => {
         return `╭───╼【 *${monospace(category.toUpperCase())}* 】\n` +
-               cmds.map(cmd => `┃ ∘ ```${cmd.toLowerCase())}````).join('\n') + '\n' +
+               cmds.map(cmd => `┃ ∘ \`\`\`${cmd.toLowerCase()}\`\`\``).join('\n') + '\n' +
                `╰──────────╼\nmade with 💘`;
       };
 
       let msg = namo() + '\n\n'; 
       for (const [category, cmds] of Object.entries(gorized)) {
-          msg += package(category, cmds) + '\n\n';
+          msg += pack(category, cmds) + '\n\n';
       }
       await conn.send(message.user, msg.trim(), {quoted: message});
     }
 });
-               
+            
