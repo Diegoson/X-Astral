@@ -16,7 +16,14 @@ const CONFIG = {
         prefix: process.env.COMMAND_PREFIX || '.',
         mode: process.env.MODE || 'private',
         mods: process.env.MODS || '27686881509,27686567257,27828418477'
+    
     },
+   features: {
+            add: true,      
+            remove: true,   
+            promote: true,  
+            demote: false,  
+   },  
     logging: {
         level: process.env.LOG_LEVEL || 'info',
         format: process.env.LOG_FORMAT || 'combined'
