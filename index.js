@@ -8,7 +8,7 @@ const {
 } = require("@whiskeysockets/baileys");
 const { serialize } = require("./lib/messages");
 const ut = require("util");
-const { getPlugins } = require('./lib/loads');
+const { getPlugins } = require("./lib/loads");
 const CONFIG = require("./config");
 const readline = require("readline");
 const chalk = require("chalk");
@@ -51,38 +51,40 @@ async function startBot() {
         if (type === "notify" && Array.isArray(messages)) {
             for (const msg of messages) {
                 const message = await serialize(conn, msg);
-                const { sender, isGroup, text, isAdmin } = message; 
-                const isPrivate = CONFIG.app.mode === "public"; 
-                if (!isPrivate && !message.fromMe && !CONFIG.app.mods.includes(sender.split("@")[0])) {
-                    return;
-                }
-                const control = CONFIG.app.prefix;
-                let cmd_txt = text ? text.trim().toLowerCase() : null;
-                if (cmd_txt && cmd_txt.startsWith(control)) {
-                    cmd_txt = cmd_txt.slice(control.length).trim();
-                }
-                const [cmd, ...match] = cmd_txt ? cmd_txt.split(/\s+/) : [null];
-                const command = commands.find(c => c.command === cmd);
-                if (command) {
-                    try {
-                        await command.execute({ message, conn, match, isAdmin });
-                    } catch (error) {
-                        log("error", `${error.message}`);
-                        message.reply(`${error.message}`);
+                if (!message) {
+                    log("error", "error_seril");
+                    continue;
+                } try {
+                    const { sender, isGroup, text } = message;
+                    const isPrivate = CONFIG.app.mode === "public";
+                    if (!isPrivate && !message.fromMe && !CONFIG.app.mods.includes(sender.split("@")[0])) {
+                        return;
                     }
-                } else if (cmd_txt?.startsWith('$') || cmd_txt?.startsWith('>')) {
-                    try {
-                        const result = await eval(cmd_txt.slice(1).trim());
-                        return message.reply(`${ut.inspect(result, { depth: null })}`);
-                    } catch (error) {
-                        message.reply(`${error.message}`);
+                    const control = CONFIG.app.prefix;
+                    let cmd_txt = text ? text.trim().toLowerCase() : null;
+                    if (cmd_txt && cmd_txt.startsWith(control)) {
+                        cmd_txt = cmd_txt.slice(control.length).trim();
                     }
+                    const command = commands.find((c) => c.command === cmd_txt);
+                    if (command) {
+                        await command.execute(message, conn);
+                    } else if (cmd_txt?.startsWith("$") || cmd_txt?.startsWith(">")) {
+                        try {
+                            const result = await eval(cmd_txt.slice(1).trim());
+                            return message.reply(`${ut.inspect(result, { depth: null })}`);
+                        } catch (error) {
+                            message.reply(`${error.message}`);
+                        }
+                    }
+                } catch (error) {
+                    log("error", `Error processing message: ${error.message}`);
                 }
             }
         }
     });
 
     conn.ev.on("creds.update", saveCreds);
+
     if (!conn.authState.creds.registered) {
         console.clear();
         console.log(chalk.cyan('Starting pairing process...'));
@@ -93,7 +95,7 @@ async function startBot() {
             console.log(chalk.cyan(`Pair_Code=>: ${code}`));
             console.log(chalk.cyan('Follow the instructions on WhatsApp to complete pairing'));
         } catch (error) {
-            console.error(chalk.redBright('Err:'), error);
+            console.error(chalk.redBright('Error:'), error);
         }
         rl.close();
     }
@@ -102,44 +104,46 @@ async function startBot() {
         for (const participant of participants) {
             log("info", `GROUP: ${action} ${participant} => ${id}`);
             const username = `@${participant.split('@')[0]}`;
-            const timestamp = new Date().toLocaleString(); 
+            const timestamp = new Date().toLocaleString();
             try {
+                let messageText = "";
+
                 if (action === "add") {
-                    const ww_nxt = `
+                    messageText = `
 ╭─────【 *welcome* 】
 │ *Welcome*, ${username}
 │ *Joined at*: ${timestamp}
 │ *Enjoy your stay*
 ╰─────∘
-`;                    
-                    await conn.sendMessage(id, { text: ww_nxt, mentions: [participant] });
+`;
                 } else if (action === "remove") {
-                    const nxt_xxx = `
+                    messageText = `
 ╭─────【 *goodbye* 】
 │ *Goodbye*, ${username}
 │ *Left at*: ${timestamp}
 │ *We will miss you*
 ╰─────∘
-`;          
-                    await conn.sendMessage(id, { text: nxt_xxx, mentions: [participant]});
+`;
                 } else if (action === "promote") {
-                    const naxor_ser = `
+                    messageText = `
 ╭─────【 *promoted* 】
 │ *Congratulations*, ${username}
 │ *Promoted to*: Admin 
-│ *Cool great_work*
+│ *Great work!*
 ╰─────∘
-`;                   
-                    await conn.sendMessage(id, { text: naxor_ser, mentions: [participant] });
+`;
                 } else if (action === "demote") {
-                    const extinct = `
+                    messageText = `
 ╭─────【 *demoted* 】
 │ *Notice*, ${username}
 │ *Demoted from*: Admin
-│ *Eish wasted_man*
+│ *Stay positive!*
 ╰─────∘
-`;            
-                  await conn.sendMessage(id, { text: extinct, mentions: [participant] });
+`;
+                }
+
+                if (messageText) {
+                    await conn.sendMessage(id, { text: messageText, mentions: [participant] });
                 }
             } catch (error) {
                 log("error", `${error.message}`);
@@ -147,13 +151,13 @@ async function startBot() {
         }
     });
 
- conn.ev.on("connection.update", async (update) => {
-    const { connection } = update;
-    if (connection === "open") {
-        console.log(chalk.greenBright('_Bot is now connected_'));
-        const plugins = getPlugins(); 
-    }
-});
+    conn.ev.on("connection.update", async (update) => {
+        const { connection } = update;
+        if (connection === "open") {
+            console.log(chalk.greenBright('Connection established successfully!'));
+            const plugins = getPlugins();
+        }
+    });
+}
 
 startBot();
-}
