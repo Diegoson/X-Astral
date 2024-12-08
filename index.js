@@ -8,7 +8,7 @@ const {
 } = require("@whiskeysockets/baileys");
 const { serialize } = require("./lib/messages");
 const ut = require("util");
-const { getMessage, setCustom } = require('./cn_data/group');
+const { getMessage } = require('./cn_data/group');
 const { getPlugins } = require("./lib/loads");
 const CONFIG = require("./config");
 const readline = require("readline");
@@ -97,19 +97,20 @@ async function startBot() {
       }
         rl.close();
  }
-
-    conn.ev.on('group-participants.update', async ({ id, participants, action }) => {
-        for (const participant of participants) {
-            const username = `@${participant.split('@')[0]}`;
-            const timestamp = new Date().toLocaleString();
-            try {
-            const mamo = getMessage(action, username, timestamp);
-                if (mamo) {
-                    await conn.sendMessage(id, { text: mamo, mentions: [participant] });
+    
+conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
+    for (const participant of participants) {
+        const username = `@${participant.split('@')[0]}`;
+        const timestamp = new Date().toLocaleString();
+        try {
+          const message_admin = getMessage(action, username, timestamp);
+            if (message_admin) {
+             await conn.sendMessage(id, { text: message_admin, mentions: [participant] });
+            } else {
                 }} catch (error) {
-                log("error", `${error.message}`);
-            }}
-    });
+            log("error", `${error.message}`);
+        }}
+});
 
     conn.ev.on("connection.update", async (update) => {
         const { connection } = update;
