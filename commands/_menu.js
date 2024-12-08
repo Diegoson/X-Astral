@@ -29,13 +29,17 @@ CreatePlug({
       const pack = (category, cmds) => {
         return `╭───╼【 *${monospace(category.toUpperCase())}* 】\n` +
                cmds.map(cmd => `┃ ∘ \`\`\`${cmd.toLowerCase()}\`\`\``).join('\n') + '\n' +
-               `╰──────────╼\nmade with 💘`;
+               `╰──────────╼`;
       };
 
       let msg = namo() + '\n\n'; 
       for (const [category, cmds] of Object.entries(gorized)) {
           msg += pack(category, cmds) + '\n\n';
       }
+
+      msg += `made with 💘`;
+
       await conn.send(message.user, msg.trim(), {quoted: message});
     }
 });
+                                                      
