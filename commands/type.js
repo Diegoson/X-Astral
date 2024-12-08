@@ -5,24 +5,18 @@ CreatePlug({
     category: 'general',
     desc: 'alive',
     execute: async (message, conn) => {
-        try {
-            const platform = process.platform;
-            const runtime = process.version;
-            const uptime = process.uptime();
-            const usage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
-     const status = `╭───╼*〔Bot Status〕*
-            
-🟢 *Bot is Alive*
-          
-🟢 *PLATFORM:* \`${platform}\`                      
-🟢 *UPTIME:* \`${Math.floor(uptime / 60)}m ${Math.floor(uptime % 60)}s\`     
-🟢 *MEMORY:* \`${usage}MB\`
+        const platform = process.platform;
+        const runtime = process.version;
+        const uptime = process.uptime();
+        const usage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
+        const status = `\`\`\`
+Bot Status:
 
-╰──────────╼`;
-                await conn.send(message.user, status,);
-        } catch (error) {
-            console.error(error);
-        }
+Platform: ${platform}
+Uptime: ${Math.floor(uptime / 60)}m ${Math.floor(uptime % 60)}s
+Memory Usage: ${usage}MB
+\`\`\``;
+        await conn.send(message.user, { text: status }, {quoted: message});
     }
 });
-        
+                        
