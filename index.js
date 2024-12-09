@@ -49,68 +49,68 @@ async function startBot() {
     }
 
     conn.ev.on("messages.upsert", async ({ messages, type }) => {
-        if (type === "notify" && Array.isArray(messages)) {
-            for (const msg of messages) {
-                const message = await serialize(conn, msg);
-                if (!message) {
-                    log("error", "error_seril");
-                    continue;
-                } try {
-                    const { sender, isGroup, text } = message;
-                    const isPrivate = CONFIG.app.mode === "public";
-                    if (!isPrivate && !message.fromMe && !CONFIG.app.mods.includes(sender.split("@")[0])) {
-                        return;
-                    }
-                    const control = CONFIG.app.prefix;
-                    let cmd_txt = text ? text.trim().toLowerCase() : null;
-                    if (cmd_txt && cmd_txt.startsWith(control)) {
-                        cmd_txt = cmd_txt.slice(control.length).trim();
-                    }
-                    const command = commands.find((c) => c.command === cmd_txt);
-                    if (command) {
-                        await command.execute(message, conn);
-                    } else if (cmd_txt?.startsWith("$") || cmd_txt?.startsWith(">")) {
-                        try {
-                            const result = await eval(cmd_txt.slice(1).trim());
-                            return message.reply(`${ut.inspect(result, { depth: null })}`);
-                        } catch (error) {
-                            message.reply(`${error.message}`);
-                        }
-                    }} catch (error) {
-                    log("error", `${error.message}`);
+    if (type === "notify" && Array.isArray(messages)) {
+        for (const msg of messages) {
+            const message = await serialize(conn, msg);
+            if (!message) {
+                log("error", `${error.message}`);
+                continue;
+            } try {
+                const { sender, isGroup, text } = message;
+                const isPrivate = CONFIG.app.mode === "public";
+                if (!isPrivate && !message.fromMe && !CONFIG.app.mods.includes(sender.split("@")[0])) {
+                    return;
+                }       
+                const control = CONFIG.app.prefix;
+                let cmd_txt = text ? text.trim().toLowerCase() : null;
+                if (cmd_txt && cmd_txt.startsWith(control)) {
+                    cmd_txt = cmd_txt.slice(control.length).trim();
                 }
-            }
+                const command = commands.find((c) => c.command === cmd_txt);
+                if (command) {
+                    await command.execute(message, conn);
+                } else if (cmd_txt?.startsWith("$") || cmd_txt?.startsWith(">")) {
+                    try {
+                        let act = cmd_txt.slice(1).trim();
+                        const result = await eval(`(async () => { return ${act}; })()`);
+                        return message.reply(`\`\`\`\n${ut.inspect(result, { depth: null })}\n\`\`\``);
+                    } catch (error) {
+                        return message.reply(`\`\`\`\n${error.message}\n\`\`\``);
+                    }}
+            } catch (error) {
+                log("error", `${error.message}`);
+            }}
         }
-    });
+   });
 
     conn.ev.on("creds.update", saveCreds);
     if (!conn.authState.creds.registered) {
         console.clear();
-        console.log(chalk.cyan('Starting pairing process_num?...'));
+        console.log(chalk.cyan('Starting pairing process...'));
         let phoneNumber = await question(`   ${chalk.cyan('- Please enter your WhatsApp number')}: `);
         phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
         try {
             let code = await conn.requestPairingCode(phoneNumber);
             console.log(chalk.cyan(`Pair_Code=>: ${code}`));
-          } catch (error) {
+        } catch (error) {
             log("error", error);
-      }
+        }
         rl.close();
- }
-    
-conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
-    for (const participant of participants) {
-        const username = `@${participant.split('@')[0]}`;
-        const timestamp = new Date().toLocaleString();
-        try {
-          const message_admin = getMessage(action, username, timestamp);
-            if (message_admin) {
-             await conn.sendMessage(id, { text: message_admin, mentions: [participant] });
-            } else {
+    }
+
+    conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
+        for (const participant of participants) {
+            const username = `@${participant.split('@')[0]}`;
+            const timestamp = new Date().toLocaleString();
+            try {
+                const message_admin = getMessage(action, username, timestamp);
+                if (message_admin) {
+                    await conn.sendMessage(id, { text: message_admin, mentions: [participant] });
                 }} catch (error) {
-            log("error", `${error.message}`);
-        }}
-});
+                log("error", `${error.message}`);
+            }
+        }
+    });
 
     conn.ev.on("connection.update", async (update) => {
         const { connection } = update;
@@ -122,3 +122,4 @@ conn.ev.on("group-participants.update", async ({ id, participants, action }) => 
 }
 
 startBot();
+    
