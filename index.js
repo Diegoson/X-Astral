@@ -53,12 +53,11 @@ async function startBot() {
         for (const msg of messages) {
             const message = await serialize(conn, msg);
             if (!message) {
-                log("error", `${error.message}`);
                 continue;
             } try {
                 const { sender, isGroup, text } = message;
                 const isPrivate = CONFIG.app.mode === "public";
-                if (!isPrivate && !message.fromMe && !CONFIG.app.mods.includes(sender.split("@")[0])) {
+                if (!isPrivate && !message.isFromMe && !CONFIG.app.mods.includes(sender.split("@")[0])) {
                     return;
                 }       
                 const control = CONFIG.app.prefix;
