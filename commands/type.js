@@ -15,6 +15,8 @@ Bot Status:
 Platform: ${platform}
 Uptime: ${Math.floor(uptime / 60)}m ${Math.floor(uptime % 60)}s
 Memory Usage: ${usage}MB
+
+Im alive now 💘
 \`\`\``;
         await conn.send(message.user, { text: status }, {quoted: message});
     }
