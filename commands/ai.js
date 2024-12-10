@@ -2,12 +2,12 @@ const { CreatePlug } = require('../lib/commands');
 const fs = require('fs');
 const { fetchJson } = require('../lib/functions');
 const { tmpFile } = require('../lib/upload'); 
-const { YanzGPT } = require('../lib/YanzGPT');
+const { YanzGPT } = require('../lib/chat');
 
 CreatePlug({
     command: 'ai',
     category: 'ai',
-    desc: 'Gunakan AI untuk menjawab pertanyaan atau menganalisis gambar',
+    desc: 'ai_chat',
     execute: async (message, conn) => {
         let text = '';
         if (message.text) {
@@ -18,15 +18,11 @@ CreatePlug({
             text = message.caption;
         }
          if (!text) {
-            return message.reply(`*Cara Penggunaan Perintah AI:*
-- Ketik perintah *${CONFIG.app.prefix}ai* diikuti dengan pertanyaan Anda.
-- Untuk menggunakan model *pro*, tambahkan kata *pro* di awal pertanyaan Anda.
-*Contoh:*
-- _${CONFIG.app.prefix}ai Apa itu AI?_
-- _${CONFIG.app.prefix}ai pro Jelaskan teori relativitas._
-*Catatan:* Jika Anda tidak menyebutkan model, bot akan menggunakan model default.`);
-        }
-        try {
+            return message.reply(`use ${CONFIG.app.prefix}ai + ur question
+*Examples:*
+${CONFIG.app.prefix}ai What is AI?
+${CONFIG.app.prefix}ai pro Explain xnxx`);
+         } try {
             const isImageOrVideo = 
                 message.type === 'imageMessage' || 
                 message.type === 'videoMessage' || 
