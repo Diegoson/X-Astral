@@ -40,10 +40,10 @@ ${CONFIG.app.prefix}ai pro Explain xnxx`);
 
                 const media = await message.media();
                 if (!media) {
-                    return message.reply('Tidak dapat mengunduh media.');
+                    return message.reply('canot download');
                 }
                 const tph = await tmpFile(media);
-                const query = text || "Tolong jelaskan gambar/video ini dengan detail";
+                const query = text || "describe_please";
                 const big = await fetchJson(
                     `https://api.yanzbotz.live/api/ai/gemini-image?url=${tph}&query=${query}&apiKey=yanzdev`
                 );
@@ -127,9 +127,8 @@ ${CONFIG.app.prefix}ai pro Explain xnxx`);
                         key: message.key 
                     } 
                 });
-            }
-            
-            await message.reply('Maaf, terjadi kesalahan saat memproses permintaan Anda.');
+          }        
+            await message.reply('marete');
         }
     }
 });
