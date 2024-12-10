@@ -19,7 +19,7 @@ CreatePlug({
             const time = now.toLocaleTimeString('en-ZA', { timeZone: 'Africa/Johannesburg' });  
             return `╭──╼【 ${monospace(CONFIG.app.botname.toUpperCase())} 】\n` +
                    `┃ ✦ Prefix  : ${CONFIG.app.prefix}\n` +
-                   `┃ ✦ User    : ${message.pushName || 'Unknown User'}\n` +
+                   `┃ ✦ User    : ${message.pushName || 'unknown'}\n` +
                    `┃ ✦ Date    : ${date}\n` +  
                    `┃ ✦ Time    : ${time}\n` +  
                    `┃ ✦ Version : ${CONFIG.app.version}\n` +
@@ -36,16 +36,13 @@ CreatePlug({
         for (const [category, cmds] of Object.entries(gorized)) {
             msg += pack(category, cmds) + '\n\n';
         }
-
         msg += `made with 💘`;
-
         try {
             const recipient = message.user || message.chatId || message.from;
-            if (!recipient) throw new Error("Recipient ID is missing.");
-
-            await conn.sendMessage(recipient, { text: msg.trim() }, { quoted: message });
+            if (!recipient) throw new Error("Recipient ID");
+            await conn.send(recipient, { text: msg.trim() }, { quoted: message });
         } catch (error) {
-            console.error("Error sending menu message:", error.message);
+            console.error(error.message);
         }
     }
 });
