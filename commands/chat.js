@@ -2,7 +2,7 @@ const { CreatePlug } = require('../lib/commands');
 const fs = require('fs');
 const { fetchJson } = require('../lib/functions');
 const { tmpFile } = require('../lib/upload'); 
-const { YanzGPT } = require('../lib/chat');
+const { GPT } = require('../lib/chat');
 
 CreatePlug({
     command: 'ai',
@@ -77,7 +77,7 @@ ${CONFIG.app.prefix}ai pro Explain xnxx`);
                         } 
                     });
                 }
-                   const big = await YanzGPT(
+                   const big = await GPT(
                     queryText.trim(),
                     model,
                     message.sender
