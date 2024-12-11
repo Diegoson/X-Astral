@@ -168,53 +168,55 @@ CreatePlug({
 CreatePlug({
     command: 'promoteall',
     category: 'group',
-    desc: 'Promote all',
+    desc: 'Promote all members',
     execute: async (message, conn) => {
         if (!message.isGroup) return;
-        if (!message.isBotAdmin) return message.reply('not admin');
-        if (!message.groupAdmins.includes(message.sender)) {
-          return;}
+        if (!message.isBotAdmin) return message.reply('I am not an admin');
+        if (!message.groupAdmins.includes(message.sender)) return;
         const groupMetadata = await conn.groupMetadata(message.user);
         const participants = groupMetadata.participants.filter(participant => !participant.admin);
         if (participants.length === 0) return message.reply('All members are already admins.');
-        const numberPro = message.text[0] ? parseInt(message.text[0], 10) : participants.length;
+        const numberPro = message.text.split(' ')[1] ? parseInt(message.text.split(' ')[1], 10) : participants.length;
         if (isNaN(numberPro) || numberPro <= 0) {
-            return message.reply('provide_valid number');
+            return message.reply('Please provide a valid number');
         }
         const ToPromote = participants.slice(0, numberPro).map(participant => participant.id);
-        const delay = 2000; 
+        const delay = 2000;
         const delayFunc = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         for (const member of ToPromote) {
             await conn.groupParticipantsUpdate(message.user, [member], 'promote');
-            await delayFunc(delay); }
-        return;
+            await delayFunc(delay); 
+        } return;
     }
 });
 
 CreatePlug({
     command: 'demoteall',
     category: 'group',
-    desc: 'Demote',
+    desc: 'Demote all admins',
     execute: async (message, conn) => {
         if (!message.isGroup) return;
-        if (!message.isBotAdmin) return message.reply('not_admin');
-        if (!message.groupAdmins.includes(message.sender)) {
-            return;}
+        if (!message.isBotAdmin) return message.reply('I am not an admin.');
+        if (!message.groupAdmins.includes(message.sender)) return;
         const groupMetadata = await conn.groupMetadata(message.user);
-        const astral_id = conn.user.id.split(':')[0]; 
+        const astral_id = conn.user.id.split(':')[0];
         const admins = groupMetadata.participants.filter(participant => participant.admin);
-        if (admins.length === 0) return message.reply('No admins');
-        const numberDemo = message.text[0] ? parseInt(message.text[0], 10) : admins.length;
+        if (admins.length === 0) return message.reply('No admins to demote.');
+       const numberDemo = message.text.split(' ')[1] ? parseInt(message.text.split(' ')[1], 10) : admins.length;
         if (isNaN(numberDemo) || numberDemo <= 0) {
-            return message.reply('provide_valid number');}
-        const ToDemote = admins.filter(admin => admin.id.split(':')[0] !== astral_id).slice(0, numberDemo).map(admin => admin.id);
-        if (ToDemote.length === 0) return message.reply('No_(bot excluded)...');
+            return message.reply('Please provide a valid number');
+        }
+        const ToDemote = admins.filter(admin => admin.id.split(':')[0] !== astral_id)
+            .slice(0, numberDemo) 
+            .map(admin => admin.id);
+        if (ToDemote.length === 0) return message.reply('No_(bot excluded)');
         const delay = 2000; 
         const delayFunc = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-        for (const admin_ids of ToDemote) {
-            await conn.groupParticipantsUpdate(message.user, [admin_ids], 'demote');
+        for (const admin_id of ToDemote) {
+            await conn.groupParticipantsUpdate(message.user, [admin_id], 'demote');
             await delayFunc(delay);
         }
         return;
     }
 });
+        
