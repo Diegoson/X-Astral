@@ -159,12 +159,16 @@ CreatePlug({
         if (!message.isGroup) return;
         const groupMetadata = await conn.groupMetadata(message.user);
         const name = groupMetadata.subject;
-        const Desc = groupMetadata.desc;
+        const desc = groupMetadata.desc;
         const count = groupMetadata.participants.length;
-        return message.reply(`*Name*: ${name}\n*Desc*: ${Desc}\n*Members*: ${count}`);
+        const img = await conn.profilePictureUrl(message.user);
+        await conn.send(message.user, {
+            image: { url: img }, 
+            caption: `*Name*: ${name}\n*Members*: ${count}\n*Desc*: ${desc}`
+        });
     }
 });
-            
+
 CreatePlug({
     command: 'promoteall',
     category: 'group',
