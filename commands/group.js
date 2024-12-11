@@ -161,7 +161,7 @@ CreatePlug({
         const name = groupMetadata.subject;
         const Desc = groupMetadata.desc;
         const count = groupMetadata.participants.length;
-        return message.reply(```*Name*: ${name}\n*Desc*: ${Desc}\n*Members*: ${count}```);
+        return message.reply(`*Name*: ${name}\n*Desc*: ${Desc}\n*Members*: ${count}`);
     }
 });
             
