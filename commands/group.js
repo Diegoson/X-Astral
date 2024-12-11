@@ -96,6 +96,24 @@ CreatePlug({
         }
     }
 });
-    
+
+
+CreatePlug({
+    command: 'ban',
+    category: 'group',
+    desc: 'Ban a user from the group',
+    execute: async (message, conn) => {
+        if (!message.isGroup) return;
+        if (!message.isBotAdmin) return message.reply('not admin');
+        if (!message.groupAdmins.includes(message.sender)) {
+            return;
+        }
+        const men = message.mentions[0];
+        if (!men) return message.reply('mention_user');
+        await conn.groupParticipantsUpdate(message.user, [men], 'remove');
+        return message.reply(`Banned ${men}`);
+    }
+});
+
         
           
