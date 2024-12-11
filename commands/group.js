@@ -115,5 +115,22 @@ CreatePlug({
     }
 });
 
+
+CreatePlug({
+    command: 'promote',
+    category: 'group',
+    desc: 'Promote a user to admin',
+    execute: async (message, conn) => {
+        if (!message.isGroup) return;
+        if (!message.isBotAdmin) return;
+        if (!message.groupAdmins.includes(message.sender)) {
+            return;}
+        const users = message.mentions[0];
+        if (!users) return message.reply('mention a usr');
+        await conn.groupParticipantsUpdate(message.user, [users], 'promote');
+        return;
+    }
+});
+                        
         
           
