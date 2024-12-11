@@ -65,7 +65,7 @@ CreatePlug({
           const settings = await conn.groupMetadata(message.user);
             if (!settings.announce) {
                 return message.reply('group_already_unmuted');}
-             await conn.groupSettingUpdate(message.user, 'chat');
+             await conn.groupSettingUpdate(message.user, 'not_announcement');
             return message.reply('_group_been_unmuted_');
         } catch (err) {
             console.error(err);
