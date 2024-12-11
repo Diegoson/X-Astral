@@ -187,29 +187,34 @@ CreatePlug({
         for (const member of ToPromote) {
             await conn.groupParticipantsUpdate(message.user, [member], 'promote');
             await delayFunc(delay); }
-        return message.reply(`${ToPromote.length} member(s)`);
+        return;
     }
 });
-
-
 
 CreatePlug({
     command: 'demoteall',
     category: 'group',
-    desc: 'Demote all admins',
+    desc: 'Demote',
     execute: async (message, conn) => {
         if (!message.isGroup) return;
-        if (!message.isBotAdmin) return message.reply('not admin');
+        if (!message.isBotAdmin) return message.reply('not_admin');
         if (!message.groupAdmins.includes(message.sender)) {
-            return;
-        }
+            return;}
         const groupMetadata = await conn.groupMetadata(message.user);
+        const astral_id = conn.user.id.split(':')[0]; 
         const admins = groupMetadata.participants.filter(participant => participant.admin);
-        if (admins.length === 0) return message.reply('No admins to demote');
-        const ToDemote = admins.map(admin => admin.id);
-        await conn.groupParticipantsUpdate(message.user, ToDemote, 'demote');
-        return message.reply('All_admins_been_demoted');
+        if (admins.length === 0) return message.reply('No admins');
+        const numberDemo = message.text[0] ? parseInt(message.text[0], 10) : admins.length;
+        if (isNaN(numberDemo) || numberDemo <= 0) {
+            return message.reply('provide_valid number');}
+        const ToDemote = admins.filter(admin => admin.id.split(':')[0] !== astral_id).slice(0, numberDemo).map(admin => admin.id);
+        if (ToDemote.length === 0) return message.reply('No_(bot excluded)...');
+        const delay = 2000; 
+        const delayFunc = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        for (const admin_ids of ToDemote) {
+            await conn.groupParticipantsUpdate(message.user, [admin_ids], 'demote');
+            await delayFunc(delay);
+        }
+        return;
     }
 });
-            
-          
