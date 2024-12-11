@@ -182,5 +182,24 @@ CreatePlug({
         return message.reply('All_members have been promoted');
     }
 });
+
+CreatePlug({
+    command: 'demoteall',
+    category: 'group',
+    desc: 'Demote all admins',
+    execute: async (message, conn) => {
+        if (!message.isGroup) return;
+        if (!message.isBotAdmin) return message.reply('not admin');
+        if (!message.groupAdmins.includes(message.sender)) {
+            return;
+        }
+        const groupMetadata = await conn.groupMetadata(message.user);
+        const admins = groupMetadata.participants.filter(participant => participant.admin);
+        if (admins.length === 0) return message.reply('No admins to demote');
+        const ToDemote = admins.map(admin => admin.id);
+        await conn.groupParticipantsUpdate(message.user, ToDemote, 'demote');
+        return message.reply('All_admins_been_demoted');
+    }
+});
             
           
