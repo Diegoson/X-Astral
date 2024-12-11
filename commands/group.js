@@ -73,5 +73,29 @@ CreatePlug({
         }
     }
 });
+                                                   
+CreatePlug({
+    command: 'tagall',
+    category: 'group',
+    desc: 'Mention all',
+    execute: async (message, conn) => {
+        if (!message.isGroup) return;
+        if (!message.isBotAdmin) return;
+        if (!message.groupAdmins.includes(message.sender)) {
+            return;
+        }try {
+           const groupMetadata = await conn.groupMetadata(message.user);
+            const participants = groupMetadata.participants;
+            const mentions = participants.map(participant => participant.id);
+            const msg = `@${mentions.join(' @')}`;
+            await conn.send(message.user, { text: msg, mentions }, { quoted: message });
+            return;
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+    }
+});
+    
         
           
