@@ -168,49 +168,40 @@ CreatePlug({
 CreatePlug({
     command: 'promoteall',
     category: 'group',
-    desc: 'Promote all members',
+    desc: 'Promote all',
     execute: async (message, conn) => {
         if (!message.isGroup) return;
         if (!message.isBotAdmin) return message.reply('I am not an admin');
         if (!message.groupAdmins.includes(message.sender)) return;
         const groupMetadata = await conn.groupMetadata(message.user);
         const participants = groupMetadata.participants.filter(participant => !participant.admin);
-        if (participants.length === 0) return message.reply('All members are already admins.');
-        const numberPro = message.text.split(' ')[1] ? parseInt(message.text.split(' ')[1], 10) : participants.length;
-        if (isNaN(numberPro) || numberPro <= 0) {
-            return message.reply('Please provide a valid number');
-        }
-        const ToPromote = participants.slice(0, numberPro).map(participant => participant.id);
+        if (participants.length === 0) return;
+        const ToPromote = participants.map(participant => participant.id);
         const delay = 2000;
         const delayFunc = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         for (const member of ToPromote) {
             await conn.groupParticipantsUpdate(message.user, [member], 'promote');
-            await delayFunc(delay); 
-        } return;
+            await delayFunc(delay);
+        }
+        return;
     }
 });
 
 CreatePlug({
     command: 'demoteall',
     category: 'group',
-    desc: 'Demote all admins',
+    desc: 'Demote all',
     execute: async (message, conn) => {
         if (!message.isGroup) return;
-        if (!message.isBotAdmin) return message.reply('I am not an admin.');
+        if (!message.isBotAdmin) return message.reply('I am not an admin');
         if (!message.groupAdmins.includes(message.sender)) return;
         const groupMetadata = await conn.groupMetadata(message.user);
-        const astral_id = conn.user.id.split(':')[0];
+        const astral_id = conn.user.id.split(':')[0]; 
         const admins = groupMetadata.participants.filter(participant => participant.admin);
         if (admins.length === 0) return message.reply('No admins to demote.');
-       const numberDemo = message.text.split(' ')[1] ? parseInt(message.text.split(' ')[1], 10) : admins.length;
-        if (isNaN(numberDemo) || numberDemo <= 0) {
-            return message.reply('Please provide a valid number');
-        }
-        const ToDemote = admins.filter(admin => admin.id.split(':')[0] !== astral_id)
-            .slice(0, numberDemo) 
-            .map(admin => admin.id);
+        const ToDemote = admins.filter(admin => admin.id.split(':')[0] !== astral_id).map(admin => admin.id);
         if (ToDemote.length === 0) return message.reply('No_(bot excluded)');
-        const delay = 2000; 
+        const delay = 2000;
         const delayFunc = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         for (const admin_id of ToDemote) {
             await conn.groupParticipantsUpdate(message.user, [admin_id], 'demote');
@@ -219,4 +210,3 @@ CreatePlug({
         return;
     }
 });
-        
