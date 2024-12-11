@@ -29,4 +29,49 @@ CreatePlug({
         }
     }
 });
+                        
+CreatePlug({
+    command: 'mute',
+    category: 'group',
+    desc: 'grouo',
+    execute: async (message, conn) => {
+        if (!message.isGroup) return;
+        if (!message.isBotAdmin) return message.reply('um not admin');
+         if (!message.groupAdmins.includes(message.sender)) {
+            return;
+        }try {
+            const currentSettings = await conn.groupMetadata(message.user);
+            if (currentSettings.announce) {
+                return message.reply('_Group already muted_');}
+             await conn.groupSettingUpdate(message.user, 'announcement');
+            return message.reply('_group_muted_');
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+    }
+});
+
+CreatePlug({
+    command: 'unmute',
+    category: 'group',
+    desc: 'Unmute',
+    execute: async (message, conn) => {
+        if (!message.isGroup) return;
+        if (!message.isBotAdmin) return message.reply('um_not_admin');
+        if (!message.groupAdmins.includes(message.sender)) {
+            return;
+        }try {
+          const settings = await conn.groupMetadata(message.user);
+            if (!settings.announce) {
+                return message.reply('group_already_unmuted');}
+             await conn.groupSettingUpdate(message.user, 'chat');
+            return message.reply('_group_been_unmuted_');
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+    }
+});
+        
           
