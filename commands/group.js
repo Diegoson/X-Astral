@@ -163,5 +163,24 @@ CreatePlug({
     }
 });
             
+
+CreatePlug({
+    command: 'promoteall',
+    category: 'group',
+    desc: 'Promote all members to admins',
+    execute: async (message, conn) => {
+        if (!message.isGroup) return;
+        if (!message.isBotAdmin) return message.reply('not admin');
+        if (!message.groupAdmins.includes(message.sender)) {
+            return;
+        }
+        const groupMetadata = await conn.groupMetadata(message.user);
+        const participants = groupMetadata.participants.filter(participant => !participant.admin);
+        if (participants.length === 0) return message.reply('non-admin');
+        const ToPromote = participants.map(participant => participant.id);
+        await conn.groupParticipantsUpdate(message.user, ToPromote, 'promote');
+        return message.reply('All_members have been promoted');
+    }
+});
             
           
