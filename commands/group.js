@@ -132,5 +132,21 @@ CreatePlug({
     }
 });
                         
-        
+
+CreatePlug({
+    command: 'demote',
+    category: 'group',
+    desc: 'Demote a user from admin',
+    execute: async (message, conn) => {
+        if (!message.isGroup) return;
+        if (!message.isBotAdmin) return message.reply('not admin');
+        if (!message.groupAdmins.includes(message.sender)) {
+            return;}
+        const users = message.mentions[0];
+        if (!users) return message.reply('mention a user');
+        await conn.groupParticipantsUpdate(message.user, [users], 'demote');
+        return;
+    }
+});
+            
           
