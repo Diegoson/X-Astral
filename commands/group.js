@@ -40,8 +40,8 @@ CreatePlug({
          if (!message.groupAdmins.includes(message.sender)) {
             return;
         }try {
-            const currentSettings = await conn.groupMetadata(message.user);
-            if (currentSettings.announce) {
+            const settings = await conn.groupMetadata(message.user);
+            if (settings.announce) {
                 return message.reply('_Group already muted_');}
              await conn.groupSettingUpdate(message.user, 'announcement');
             return message.reply('_group_muted_');
