@@ -77,18 +77,20 @@ CreatePlug({
 CreatePlug({
     command: 'tagall',
     category: 'group',
-    desc: 'Mention all',
+    desc: 'Mention all with tags',
     execute: async (message, conn) => {
         if (!message.isGroup) return;
         if (!message.isBotAdmin) return;
         if (!message.groupAdmins.includes(message.sender)) {
             return;
         }try {
-           const groupMetadata = await conn.groupMetadata(message.user);
+            const groupMetadata = await conn.groupMetadata(message.user);
             const participants = groupMetadata.participants;
-            const mentions = participants.map(participant => participant.id);
-            const msg = `@${mentions.join(' @')}`;
-            await conn.send(message.user, { text: msg, mentions }, { quoted: message });
+            const mentions = participants.map((participant, index) => {
+                return { id: participant.id, tag: `${index + 1} @${participant.id.split('@')[0]}` };
+            });
+            const msg = mentions.map(m => m.tag).join('\n');
+            await conn.send(message.user, { text: msg, mentions: mentions.map(m => m.id) }, { quoted: message });
             return;
         } catch (err) {
             console.error(err);
