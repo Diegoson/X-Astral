@@ -148,5 +148,20 @@ CreatePlug({
         return;
     }
 });
+
+    CreatePlug({
+    command: 'info',
+    category: 'group',
+    desc: 'Get information about the group',
+    execute: async (message, conn) => {
+        if (!message.isGroup) return;
+        const groupMetadata = await conn.groupMetadata(message.user);
+        const name = groupMetadata.subject;
+        const Desc = groupMetadata.desc;
+        const count = groupMetadata.participants.length;
+        return message.reply(```*Name*: ${name}\n*Desc*: ${Desc}\n*Members*: ${count}```);
+    }
+});
+            
             
           
