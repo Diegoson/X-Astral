@@ -165,25 +165,33 @@ CreatePlug({
     }
 });
             
-
 CreatePlug({
     command: 'promoteall',
     category: 'group',
-    desc: 'Promote all members to admins',
+    desc: 'Promote all',
     execute: async (message, conn) => {
         if (!message.isGroup) return;
         if (!message.isBotAdmin) return message.reply('not admin');
         if (!message.groupAdmins.includes(message.sender)) {
-            return;
-        }
+          return;}
         const groupMetadata = await conn.groupMetadata(message.user);
         const participants = groupMetadata.participants.filter(participant => !participant.admin);
-        if (participants.length === 0) return message.reply('non-admin');
-        const ToPromote = participants.map(participant => participant.id);
-        await conn.groupParticipantsUpdate(message.user, ToPromote, 'promote');
-        return message.reply('All_members have been promoted');
+        if (participants.length === 0) return message.reply('All members are already admins.');
+        const numberPro = message.text[0] ? parseInt(message.text[0], 10) : participants.length;
+        if (isNaN(numberPro) || numberPro <= 0) {
+            return message.reply('provide_valid number');
+        }
+        const ToPromote = participants.slice(0, numberPro).map(participant => participant.id);
+        const delay = 2000; 
+        const delayFunc = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        for (const member of ToPromote) {
+            await conn.groupParticipantsUpdate(message.user, [member], 'promote');
+            await delayFunc(delay); }
+        return message.reply(`${ToPromote.length} member(s)`);
     }
 });
+
+
 
 CreatePlug({
     command: 'demoteall',
