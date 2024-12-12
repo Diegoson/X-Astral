@@ -7,14 +7,13 @@ const {
 } = require("baileys");
 const { serialize } = require("./lib/messages");
 const ut = require("util");
-const { getMessage } = require('./cn_data/group');
-const { getPlugins } = require("./lib/loads");
+const Plugin = require('./database/plugins');
+const { getPlugins } = require("./database/getPlugins");
 const CONFIG = require("./config");
-const readline = require("readline");
 const chalk = require("chalk");
 const pino = require("pino");
 const  mongooseAuthState = require('./database/init');
-const { makeInMemoryStore } = require("@whiskeysockets/baileys");
+const { makeInMemoryStore } = require("baileys");
 const { commands } = require("./lib/commands");
 const { exec } = require('child_process');
 const util = require('util');
