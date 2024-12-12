@@ -3,7 +3,8 @@
   "version": "4.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "pm2 start pm2.js --attach",
+		"stop":  "pm2 stop pm2.js"
   },
   "dependencies": {
     "@hapi/boom": "^9.1.2",
