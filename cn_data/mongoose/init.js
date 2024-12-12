@@ -1,5 +1,6 @@
 const proto = require('baileys');
 const { initAuthCreds } = require('baileys');
+const { AuthState } = require('./authstates');
 const mongoose = require('mongoose');
 const { jsonToBuffer, bufferToJSON, profile } = require('./utils');
 
