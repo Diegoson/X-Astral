@@ -1,3 +1,4 @@
+const CONFIG = require('../config');
 const mongoose = require('mongoose');
 const AstralScheme = new mongoose.Schema({
 	botName: {
