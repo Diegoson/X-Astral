@@ -1,11 +1,10 @@
 const {
     default: makeWASocket,
-    useMultiFileAuthState,
     fetchLatestBaileysVersion,
     DisconnectReason,
     Browsers,
     delay,
-} = require("@whiskeysockets/baileys");
+} = require("baileys");
 const { serialize } = require("./lib/messages");
 const ut = require("util");
 const { getMessage } = require('./cn_data/group');
