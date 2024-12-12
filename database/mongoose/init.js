@@ -24,7 +24,7 @@ const mongooseAuthState = async (sessionId, logger) => {
         { upsert: true }
       );
     } catch (error) {
-      logger.error(error);
+      console.log(error);
     }
   };
 
@@ -33,7 +33,7 @@ const mongooseAuthState = async (sessionId, logger) => {
       const record = await AuthState.findOne({ session_id: sessionId, data_key: key });
       return record ? jsonToBuffer(JSON.parse(record.data_value)) : null;
     } catch (error) {
-      logger.error(error);
+      console.log(error);
     }
   };
 
@@ -61,7 +61,7 @@ const mongooseAuthState = async (sessionId, logger) => {
                 return acc;
               }, {});
             } catch (error) {
-              logger.error(error);
+              console.log(error);
             }
           },
           logger
@@ -92,7 +92,7 @@ const mongooseAuthState = async (sessionId, logger) => {
                 }))
               );
             } catch (error) {
-              logger.error(error);
+              console.log(error);
             }
           },
           logger
@@ -108,7 +108,7 @@ const mongooseAuthState = async (sessionId, logger) => {
       try {
         await AuthState.deleteMany({ session_id: sessionId });
       } catch (error) {
-        logger.error(error);
+        console.log(error);
       }
     },
   };
