@@ -12,6 +12,7 @@ const { getPlugins } = require("./database/getPlugins");
 const CONFIG = require("./config");
 const chalk = require("chalk");
 const pino = require("pino");
+const { getMongoDB } = require('./database/start');
 const  mongooseAuthState = require('./database/init');
 const { makeInMemoryStore } = require("baileys");
 const { commands } = require("./lib/commands");
@@ -21,6 +22,7 @@ const store = makeInMemoryStore({
     logger: pino().child({ level: "silent", stream: "store" }),
 });
 
+getMongoDB(CONFIG);
 async function startBot() {
     const access_key = await mongooseAuthState(CONFIG.app.session_name, store);
     const { state, saveCreds } = access_key;
