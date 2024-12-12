@@ -7,7 +7,6 @@ const config = {
   restartDelay: 5000,
   maxMemory: '1G',
   watchFiles: true,
-  ignoredDirs: ['node_modules'],
   enableTimestamps: true,
 };
 
@@ -20,7 +19,6 @@ const PM2Config = () => ({
       instances: config.instances,
       restart_delay: config.restartDelay,
       watch: config.watchFiles,
-      ignore_watch: config.ignoredDirs,
       max_memory_restart: config.maxMemory,
       time: config.enableTimestamps,
     },
