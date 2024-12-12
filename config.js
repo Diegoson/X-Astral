@@ -6,7 +6,7 @@ const CONFIG = {
     app: {
         session_name: process.env.SESSION_NAME || '',
         botname: process.env.BOTNAME || 'X-ASTRAL',
-        base_url: process.env.BASE_URL || 'https://api.yanzbotz.live/api/',
+        base_url: process.env.BASE_URL || 'https://api.yanzbotz.live/',
         mongodb: process.env.MONGODB_URL '',
         version: require('./package.json').version,
         env: process.env.NODE_ENV || 'development',
