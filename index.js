@@ -18,14 +18,6 @@ const { makeInMemoryStore } = require("@whiskeysockets/baileys");
 const { commands } = require("./lib/commands");
 const { exec } = require('child_process');
 const util = require('util');
-
-global.SESSION_ID = "session";
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-});
-
-const question = (text) => new Promise((resolve) => rl.question(text, resolve));
 const store = makeInMemoryStore({
     logger: pino().child({ level: "silent", stream: "store" }),
 });
@@ -43,10 +35,6 @@ async function startBot() {
     function log(level, message) {
         if (CONFIG.logging.level === "info" && level === "info") {
             console.log(chalk.blueBright(`[INFO] ${message}`));
-        } else if (CONFIG.logging.level === "error" && level === "error") {
-            console.log(chalk.redBright(`[ERROR] ${message}`));
-        } else if (CONFIG.logging.level === "debug") {
-            console.log(chalk.greenBright(`[DEBUG] ${message}`));
         }
     }
  
@@ -56,8 +44,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
             try {
                 const message = await serialize(conn, msg);
                 if (!message) {
-                    continue;
-                }
+                    continue;}
                 const { sender, isGroup, text: chatmessage } = message;
                 log("info", `[USER]: ${sender}\n[CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}\n[MESSAGE]: ${chatmessage || "Media/Other"}`);
                 const isPrivate = CONFIG.app.mode === "public";
@@ -115,8 +102,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
                 const control = CONFIG.app.prefix;
                 let cmd_txt = chatmessage ? chatmessage.trim().toLowerCase() : null;
                 if (cmd_txt && cmd_txt.startsWith(control)) {
-                    cmd_txt = cmd_txt.slice(control.length).trim();
-                }
+                    cmd_txt = cmd_txt.slice(control.length).trim(); }
                 const command = commands.find((c) => c.command === cmd_txt);
                 if (command) {
                     try {
@@ -133,20 +119,6 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
 });
 
     conn.ev.on("creds.update", saveCreds);
-    if (!conn.authState.creds.registered) {
-        console.clear();
-        console.log(chalk.cyan('Starting pairing process...'));
-        let phoneNumber = await question(`   ${chalk.cyan('- Please enter your WhatsApp number')}: `);
-        phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
-        try {
-            let code = await conn.requestPairingCode(phoneNumber);
-            console.log(chalk.cyan(`Pair_Code=>: ${code}`));
-        } catch (error) {
-            log("error", error);
-        }
-        rl.close();
-    }
-
     conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
         for (const participant of participants) {
             const username = `@${participant.split('@')[0]}`;
