@@ -121,19 +121,30 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
 
     conn.ev.on("creds.update", saveCreds);
     conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
-        for (const participant of participants) {
-            const username = `@${participant.split('@')[0]}`;
-            const timestamp = new Date().toLocaleString();
-            try {
-                const message_admin = getMessage(action, username, timestamp);
-                if (message_admin) {
-                    await conn.sendMessage(id, { text: message_admin, mentions: [participant] });
-                }} catch (error) {
-                log("error", `${error.message}`);
-            }
-        }
-    });
-
+    for (const participant of participants) {
+        const username = `@${participant.split('@')[0]}`;
+        const timestamp = new Date();
+        try { const profile = await conn.profilePictureUrl(participant, 'image').catch(() => null);
+           const newMessage = new Message({
+                action,
+                username,
+                timestamp,
+                profile 
+            });
+           await newMessage.generateMessage();
+            const content = {
+                text: newMessage.message,
+                mentions: [participant]
+            };
+            if (profile) {
+                content.caption = newMessage.message;
+                content.image = { url: profile };}
+            await conn.sendMessage(id, content);
+        } catch (error) {
+            console.error(`${error.message}`);
+        }}
+   });
+                
     conn.ev.on("connection.update", async (update) => {
         const { connection } = update;
         if (connection === "open") {
