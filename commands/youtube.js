@@ -13,7 +13,7 @@ CreatePlug({
         const movies = res.data.data.slice(0, 10);
         let cama = `*SEARCH*: \n================\n\n`;
         movies.forEach(movie => {
-            cama += `${movie.rating}\n\n${movie.description}\n${movie.url}\n\n================\n\n`;
+            cama += `${movie.title}\n${movie.year}\n${movie.rating}\n\n${movie.description}\n${movie.url}\n\n================\n\n`;
         });
         conn.send(cama.trim());
     },
