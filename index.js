@@ -24,6 +24,7 @@ const store = makeInMemoryStore({
 });
 
 async function startBot() {
+    const access_key = await mongooseAuthState(CONFIG.app.session_name, logger);
     const { state, saveCreds } = await useMultiFileAuthState(`./session`);
     const conn = makeWASocket({
         auth: state,
