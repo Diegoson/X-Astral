@@ -7,6 +7,7 @@ const CONFIG = {
         session_name: process.env.SESSION_NAME || '',
         botname: process.env.BOTNAME || 'X-ASTRAL',
         base_url: process.env.BASE_URL || '',
+        mongodb: process.env.MONGODB_URL '',
         version: require('./package.json').version,
         env: process.env.NODE_ENV || 'development',
         prefix: process.env.COMMAND_PREFIX || '.',
