@@ -145,13 +145,25 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
         }}
    });
                 
-    conn.ev.on("connection.update", async (update) => {
-        const { connection } = update;
-        if (connection === "open") {
-            console.log(chalk.greenBright('Connection established successfully'));
-            const plugins = getPlugins();
-        }
-    });
-}
+conn.ev.on("connection.update", async (update) => {
+    const { connection } = update;
+    if (connection === "open") {
+        console.log('Connection established 👍');
+       const plugins = getPlugins();
+        for (const plugin of plugins) {
+            try {
+                await Plugin.findOneAndUpdate(
+                    { name: plugin.name },
+                    { status: 'loaded', error: null },
+                    { upsert: true, new: true }
+                );
+                console.log(('Plugin logged to database');
+            } catch (err) {
+            }}
+           const all_Plugs = await Plugin.find();
+           console.log('Plugins in database:'), all_Plugs);
+    }
+});
+               
 
 startBot();
