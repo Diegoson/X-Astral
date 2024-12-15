@@ -130,15 +130,15 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
             const username = `@${participant.split('@')[0]}`
             const number = participants.length; 
             let message = "";
-            if (action === "add" && settingz.welcomeEnabled) {
-                message = settingz.welcomeMessage
+            if (action === "add" && settingz.welcome) {
+                message = settingz.welcome
                     .replace("@pushname", username)
                     .replace("@gc_name", gcName)
                     .replace("@pp", pp || "x_astral")
                     .replace("@time", timestamp)
                     .replace("@number", number);
-            } else if (action === "remove" && settingz.goodbyeEnabled) {
-                message = settingz.goodbyeMessage
+            } else if (action === "remove" && settingz.goodbye) {
+                message = settingz.goodbye
                     .replace("@pushname", username)
                     .replace("@gc_name", gcName)
                     .replace("@pp", pp || "x_astral")
