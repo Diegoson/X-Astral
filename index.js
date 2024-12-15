@@ -120,32 +120,47 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
     }
 });
 
-    conn.ev.on("creds.update", saveCreds);
-    conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
+  conn.ev.on("creds.update", saveCreds);       
+  conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
+    const Settings = await settingz(id);
+    const gcName = (await conn.groupMetadata(id)).subject; 
+    const timestamp = new Date().toLocaleString();
     for (const participant of participants) {
-        const username = `@${participant.split('@')[0]}`;
-        const timestamp = new Date();
-        try { const profile = await conn.profilePictureUrl(participant, 'image').catch(() => null);
-           const newMessage = new Message({
-                action,
-                username,
-                timestamp,
-                profile 
-            });
-           await newMessage.generateMessage();
-            const content = {
-                text: newMessage.message,
-                mentions: [participant]
-            };
-            if (profile) {
-                content.caption = newMessage.message;
-                content.image = { url: profile };}
-            await conn.sendMessage(id, content);
-        } catch (error) {
-            console.error(`${error.message}`);
-        }}
-   });
-                
+        try { const pp = await conn.profilePictureUrl(participant, "image").catch(() => null);
+            const username = `@${participant.split('@')[0]}`
+            const number = participants.length; 
+            let message = "";
+            if (action === "add" && settingz.welcomeEnabled) {
+                message = settingz.welcomeMessage
+                    .replace("@pushname", username)
+                    .replace("@gc_name", gcName)
+                    .replace("@pp", pp || "x_astral")
+                    .replace("@time", timestamp)
+                    .replace("@number", number);
+            } else if (action === "remove" && settingz.goodbyeEnabled) {
+                message = settingz.goodbyeMessage
+                    .replace("@pushname", username)
+                    .replace("@gc_name", gcName)
+                    .replace("@pp", pp || "x_astral")
+                    .replace("@time", timestamp)
+                    .replace("@number", number);
+                      }
+            if (message) {
+                if (pp) {
+                    await conn.sendMessage(id, {
+                        image: { url: pp },
+                        caption: message,
+                    });
+                } else {
+                    await conn.sendMessage(id, { text: message });
+                }
+            }
+        } catch (err) {
+            console.error(`${err.message}`);
+        }
+    }
+});
+      
 conn.ev.on("connection.update", async (update) => {
     const { connection } = update;
     if (connection === "open") {
