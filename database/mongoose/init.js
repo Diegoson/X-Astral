@@ -5,13 +5,10 @@ const mongoose = require('mongoose');
 const { jsonToBuffer, bufferToJSON, profile } = require('./Func');
 
 const authStateSchema = new mongoose.Schema(
-  {
-    session_id: { type: String, required: true },
+  {session_id: { type: String, required: true },
     data_key: { type: String, required: true },
-    data_value: { type: String, required: true },
-  },
-  { collection: 'session', timestamps: false }
-);
+    data_value: { type: String, required: true },},
+  { collection: 'session', timestamps: false });
 
 const AuthState = mongoose.model('AuthState', authStateSchema);
 const mongooseAuthState = async (sessionId, logger) => {
