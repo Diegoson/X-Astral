@@ -1,21 +1,16 @@
 const { CreatePlug } = require('../lib/commands');
-const axios = require('axios');
-const CONFIG = require('../config');
+const YouTube = require('youtube-sr').default;
 
 CreatePlug({
     command: 'yts',
     category: 'search',
-    desc: 'Search for YTS',
+    desc: 'Search for YouTube',
     execute: async (message, conn) => {
-        const query = message.text.split(' ').slice(1).join(' ');
-        if (!query) return message.reply('_Provide seach query_');
-        const res = await axios.get(`${CONFIG.app.base_url}/api/cari/yts?query=${query}`);
-        const movies = res.data.data.slice(0, 10);
-        let cama = `*SEARCH*: \n================\n\n`;
-        movies.forEach(movie => {
-            cama += `${movie.title}\n${movie.year}\n${movie.rating}\n\n${movie.description}\n${movie.url}\n\n================\n\n`;
-        });
-        conn.send(cama.trim());
+        const query = message.text.trim();
+        if (!query) return message.reply('Please provide a search term');
+        const videos = await YouTube.search(query, { limit: 18, safeSearch: true });
+        if (!videos || videos.length === 0) return message.reply(`No_found "${query}".`);
+        const res = videos.map((m, i) => `[${++i}] ${m.title} (${m.url})`).join("\n");
+        await conn.send(message.user, { text: `*YouTube Search:* _${query}_\n\n${res}` }, { quoted: message });
     },
 });
-          
