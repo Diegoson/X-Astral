@@ -6,7 +6,7 @@ CreatePlug({
     category: 'search',
     desc: 'Search',
     execute: async (message, conn) => {
-        const query = message.text.trim();
+   const query = message.text.trim().split(' ').slice(1).join(' ');
         if (!query) return message.reply('(e.g., `yts search term`)');
         const videos = await YouTube.search(query, { limit: 18, safeSearch: true });
         if (!videos || videos.length === 0) return message.reply(`No_fund`);
