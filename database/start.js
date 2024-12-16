@@ -5,7 +5,6 @@ const AstralScheme = new mongoose.Schema({
 	version: {type: String,default: '4.0.0',},
 	created: {type: Date,default: Date.now,},
 });
-
 const Asena = mongoose.model('Asena', AstralScheme);
 async function getMongoDB(CONFIG) {
     try {
