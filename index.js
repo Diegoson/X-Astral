@@ -45,71 +45,34 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
         for (const msg of messages) {
             try {
                 const message = await serialize(conn, msg);
-                if (!message) {
-                    continue;}
-                const { sender, isGroup, text: chatmessage } = message;
-                log("info", `[USER]: ${sender}\n[CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}\n[MESSAGE]: ${chatmessage || "Media/Other"}`);
-                const isPrivate = CONFIG.app.mode === "public";
-                const isOwner = CONFIG.app.mods.includes(sender.split("@")[0]);
-                if (chatmessage.startsWith('<')) {
-                    if (!isOwner) continue;
+             if (!message) {
+                 continue;}
+                  const { sender, isGroup, text: chatmessage } = message;
+                    log("info", `[USER]: ${sender}\n[CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}\n[MESSAGE]: ${chatmessage || "Media/Other"}`);
+                    const owner = CONFIG.app.mods.includes(sender.split("@")[0]);
+                 if (chatmessage.startsWith('<')) {
+                    if (!owner) continue;
                     const parts = chatmessage.trim().split(/ +/);
                     const kode = parts[0];
-                    const q = parts.slice(1).join(' ');
-                    if (!q) {
-                        log("info", "requires parameters");
-                        await message.reply('marete san');
-                        continue;
-                    } try {
-                        const teks = await eval(`(async () => { ${kode === ">>" ? "return" : ""} ${q}})()`);
-                        await message.reply(util.format(teks));
-                    } catch (e) {
-                        log("error", `${e.message}`);
-                        await message.reply(`err:\n${e.message}`);
-                    }
-                }
-                  if (chatmessage.startsWith('=>')) {
-                    if (!isOwner) continue;
-                    try {
-                        const result = await eval(`(async () => { ${chatmessage.slice(3)} })()`);
-                        await message.reply(util.format(result));
-                    } catch (e) {
-                        log("error", `Eval (=>) error: ${e.message}`);
-                        await message.reply(`err:\n${e.message}`);
-                    }
-                }
+                    const q = parts.slice(1).join(' ');                                               
                  if (chatmessage.startsWith('>')) {
-                    if (!isOwner) continue;
-                    try {
+                    if (!owner) continue;
+                       try {
                         let evaled = await eval(chatmessage.slice(2));
-                        if (typeof evaled !== 'string') evaled = util.inspect(evaled);
-                        await message.reply(evaled);
-                    } catch (err) {
-                        log("error", `(>) error: ${err.message}`);
+                          if (typeof evaled !== 'string') evaled = util.inspect(evaled);
+                           await message.reply(evaled);
+                    } catch (err) { log("error", `(>) error: ${err.message}`);
                         await message.reply(`(>) err:\n${err.message}`);
-                    }
-                }
-                if (chatmessage.startsWith('$')) {
-                    if (!isOwner) continue;
-                    exec(chatmessage.slice(2), (err, stdout) => {
-                        if (err) {
-                            log("error", `${err.message}`);
-                            message.reply(`\n${err.message}`);
-                            return;
-                        } if (stdout) {
-                            message.reply(stdout);
-                        }
-                    });
-                }
-                const control = CONFIG.app.prefix;
-                let cmd_txt = chatmessage ? chatmessage.trim().toLowerCase() : null;
-                if (cmd_txt && cmd_txt.startsWith(control)) {
+                  }}
+               const control = CONFIG.app.prefix;
+                  let cmd_txt = chatmessage ? chatmessage.trim().toLowerCase() : null;
+                    if (cmd_txt && cmd_txt.startsWith(control)) {
                     cmd_txt = cmd_txt.slice(control.length).trim(); }
-                const command = commands.find((c) => c.command === cmd_txt);
-                if (command) {
+                      const command = commands.find((c) => c.command === cmd_txt);
+                 if (command) {
                     try {
                         log("info", `${cmd_txt}`);
-                        await command.execute(message, conn);
+                        await command.execute(message, conn, owner);
                     } catch (error) {
                       }
                 }
