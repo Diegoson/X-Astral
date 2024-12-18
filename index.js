@@ -57,8 +57,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
                     const q = parts.slice(1).join(' ');                                               
                  if (chatmessage.startsWith('>')) {
                     if (!owner) continue;
-                       try {
-                        let evaled = await eval(chatmessage.slice(2));
+                       try { let evaled = await eval(chatmessage.slice(2));
                           if (typeof evaled !== 'string') evaled = util.inspect(evaled);
                            await message.reply(evaled);
                     } catch (err) { log("error", `(>) error: ${err.message}`);
