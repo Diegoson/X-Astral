@@ -50,11 +50,11 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
                 const owner = CONFIG.app.mods.includes(sender.split("@")[0]);
                 if (chatmessage.startsWith('<')) {
                     if (!owner) continue;
-                    const parts = chatmessage.trim().split(/ +/);
-                    const kode = parts[0];
-                    const q = parts.slice(1).join(' ');
+                      const parts = chatmessage.trim().split(/ +/);
+                        const kode = parts[0];
+                         const q = parts.slice(1).join(' ');
                         }
-                if (chatmessage.startsWith('>')) {
+                     if (chatmessage.startsWith('>')) {
                     if (!owner) continue;
                     try { let evaled = await eval(chatmessage.slice(2));
                         if (typeof evaled !== 'string') evaled = util.inspect(evaled);
