@@ -62,25 +62,21 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
                            await message.reply(evaled);
                     } catch (err) { log("error", `(>) error: ${err.message}`);
                         await message.reply(`(>) err:\n${err.message}`);
-                  }}
-               const control = CONFIG.app.prefix;
-                  let cmd_txt = chatmessage ? chatmessage.trim().toLowerCase() : null;
-                    if (cmd_txt && cmd_txt.startsWith(control)) {
-                    cmd_txt = cmd_txt.slice(control.length).trim(); }
-                      const command = commands.find((c) => c.command === cmd_txt);
-                 if (command) {
-                    try {
-                        log("info", `${cmd_txt}`);
-                        await command.execute(message, conn, owner);
-                    } catch (error) {
-                      }
-                }
-
-            } catch (error) {
-              }
-        }
-    }
-});
+         }}       
+        if (cmd_txt && cmd_txt.startsWith(control)) {
+         cmd_txt = cmd_txt.slice(control.length).trim();
+          const command = commands.find((c) => c.command === cmd_txt);
+           if (command) {
+             try { if ((CONFIG.app.mode === "private" && (message.isFromMe || CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) || (sender.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) && !CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`)))) ||
+                  (CONFIG.app.mode === "public" && !private && (message.isFromMe || CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) || (sender.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) && !CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`))))
+                ) { log("info", `${cmd_txt}`);
+                 await command.execute(message, conn, owner);
+                }} catch (error) {
+                log("error", `${cmd_txt}`, error);
+          }}
+        }}
+     }}
+}});
 
 conn.ev.on("creds.update", saveCreds);       
   conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
