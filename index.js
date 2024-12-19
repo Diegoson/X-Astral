@@ -6,7 +6,6 @@ const {
     delay,
 } = require("baileys");
 const { serialize } = require("./lib/messages");
-const ut = require("util");
 const { eval: EvalCode } = require("./lib/eval");
 const Plugin = require('./database/plugins');
 const { getPlugins } = require("./database/getPlugins");
@@ -18,7 +17,6 @@ const  mongooseAuthState = require('./database/init');
 const { makeInMemoryStore } = require("baileys");
 const { commands } = require("./lib/commands");
 const { exec } = require('child_process');
-const util = require('util');
 const store = makeInMemoryStore({
     logger: pino().child({ level: "silent", stream: "store" }),
 });
