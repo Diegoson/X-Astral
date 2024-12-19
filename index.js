@@ -7,6 +7,7 @@ const {
 } = require("baileys");
 const { serialize } = require("./lib/messages");
 const ut = require("util");
+const { eval: EvalCode } = require("./lib/eval");
 const Plugin = require('./database/plugins');
 const { getPlugins } = require("./database/getPlugins");
 const CONFIG = require("./config");
