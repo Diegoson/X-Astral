@@ -1,9 +1,9 @@
 const CONFIG = require('../config');
 const mongoose = require('mongoose');
 const AstralScheme = new mongoose.Schema({
-	botname: {type: String,default: 'XAstral',},
-	version: {type: String,default: '4.0.0',},
-	created: {type: Date,default: Date.now,},
+botname: {type: String,default: 'XAstral',},
+version: {type: String,default: '4.0.0',},
+created: {type: Date,default: Date.now,},
 });
 const Asena = mongoose.model('Asena', AstralScheme);
 async function getMongoDB(CONFIG) {
