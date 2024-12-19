@@ -6,7 +6,8 @@ CreatePlug({
     command: 'menu',
     category: 'general',
     desc: 'types',
-    execute: async (message, conn) => {        
+    execute: async (message, conn) => {   
+        await message.react('🗣️');
         const gorized = commands.reduce((acc, cmd) => {
             if (!acc[cmd.category]) acc[cmd.category] = [];
             acc[cmd.category].push(cmd.command);
@@ -25,7 +26,6 @@ CreatePlug({
                    `┃ ✦ Version : ${CONFIG.app.version}\n` +
                    `╰──────────╼`;
         };
-
         const pack = (category, cmds) => {
             return `╭───╼【 *${monospace(category.toUpperCase())}* 】\n` +
                    cmds.map(cmd => `┃ ∘ \`\`\`${cmd.toLowerCase()}\`\`\``).join('\n') + '\n' +
@@ -39,7 +39,7 @@ CreatePlug({
         msg += `made with 💘`;
         try {
             const recipient = message.user || message.chatId || message.from;
-            if (!recipient) throw new Error("Recipient ID");
+            if (!recipient) throw new Error("ID");
             await conn.send(recipient, { text: msg.trim() }, { quoted: message });
         } catch (error) {
             console.error(error.message);
