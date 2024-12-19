@@ -49,22 +49,13 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
                 const { sender, isGroup, text: chatmessage } = message;
                 log("info", `[USER]: ${sender}\n[CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}\n[MESSAGE]: ${chatmessage || "Media/Other"}`);
                 const owner = CONFIG.app.mods.includes(sender.split("@")[0]);
-                if (chatmessage.startsWith('<')) {
+                  if (chatmessage.startsWith(">")) {
                     if (!owner) continue;
-                      const parts = chatmessage.trim().split(/ +/);
-                        const kode = parts[0];
-                         const q = parts.slice(1).join(' ');
-                        }
-                     if (chatmessage.startsWith('>')) {
-                    if (!owner) continue;
-                    try { let evaled = await eval(chatmessage.slice(2));
-                        if (typeof evaled !== 'string') evaled = util.inspect(evaled);
-                        await message.reply(evaled);
-                    } catch (err) {
-                        log("error", `(>) error: ${err.message}`);
-                          await message.reply(`(>) err:\n${err.message}`);
-                    }}
-                if (cmd_txt && cmd_txt.startsWith(control)) {
+                    await EvalCode(chatmessage, message);
+                }} catch (error) {
+                log("error", error);
+              }  
+              if (cmd_txt && cmd_txt.startsWith(control)) {
                     cmd_txt = cmd_txt.slice(control.length).trim();
                     const command = commands.find((c) => c.command === cmd_txt);
                     if (command) {
@@ -79,9 +70,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
                   }} catch (error) {
                 log("error", error);
             }
-        }
-    }
-});
+        });
 
 conn.ev.on("creds.update", saveCreds);       
   conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
