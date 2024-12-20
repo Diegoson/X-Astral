@@ -52,10 +52,10 @@ for (const msg of messages.messages) {
             !message.type ||
             message.type === ''
         ) continue;
-        const { sender, isGroup, text: chatmessage } = message;
-        log("info", `[USER]: ${sender}\n[CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}\n[MESSAGE]: ${chatmessage || "Media/Other"}`);
+        const { sender, isGroup, body } = message;
+        log(`[USER]: ${sender}\n[CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}\n[MESSAGE]: ${body}`);
         const owner = CONFIG.app.mods.includes(sender.split("@")[0]);
-        if (chatmessage.startsWith(">")) {
+        if (body.startsWith(">")) {
             if (!owner) continue;
             await EvalCode(chatmessage, message);
         }} catch (error) {
