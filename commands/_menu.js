@@ -46,3 +46,17 @@ CreatePlug({
         }
     }
 });
+
+CreatePlug({
+    command: 'list',
+    category: 'general',
+    desc: 'Display list',
+    execute: async (message, conn) => {   
+     await message.react('🗣️');
+       const dontAddCommandList = commands
+            .map((cmd, index) => `${index + 1}. ${monospace(cmd.command)} - ${cmd.desc || '_'}`)
+            .join('\n');
+        await conn.send(message.user, { text: dontAddCommandList }, { quoted: message });
+    }
+});
+                  
