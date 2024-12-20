@@ -55,6 +55,7 @@ for (const msg of messages.messages) {
         const { sender, isGroup, body } = message;
         log(`[USER]: ${sender}\n[CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}\n[MESSAGE]: ${body}`);
         const owner = CONFIG.app.mods.includes(sender.split("@")[0]);
+        const match = body.trim().split(/ +/).slice(1);
         if (body.startsWith(">")) {
             if (!owner) continue;
             await EvalCode(chatmessage, message);
@@ -80,7 +81,7 @@ for (const msg of messages.messages) {
                                 !CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`))))
                 ) {
                     log("info", `${cmd_txt}`);
-                    await command.execute(message, conn, owner);
+                    await command.execute(message, conn, match, owner);
                 }
             } catch (error) {
                 log("error", `${cmd_txt}`, error);
