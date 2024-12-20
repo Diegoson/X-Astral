@@ -40,35 +40,53 @@ async function startBot() {
     }
  
 conn.ev.on("messages.upsert", async ({ messages, type }) => {
-    if (type === "notify" && Array.isArray(messages)) {
-        for (const msg of messages) {
-            try { const message = await serialize(conn, msg);
-                if (!message) continue;
-                const { sender, isGroup, text: chatmessage } = message;
-                log("info", `[USER]: ${sender}\n[CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}\n[MESSAGE]: ${chatmessage || "Media/Other"}`);
-                const owner = CONFIG.app.mods.includes(sender.split("@")[0]);
-                  if (chatmessage.startsWith(">")) {
-                    if (!owner) continue;
-                    await EvalCode(chatmessage, message);
-                }} catch (error) {
-                log("error", error);
-              }  
-              if (cmd_txt && cmd_txt.startsWith(control)) {
-                    cmd_txt = cmd_txt.slice(control.length).trim();
-                    const command = commands.find((c) => c.command === cmd_txt);
-                    if (command) {
-                        try { if ((CONFIG.app.mode === "private" && (message.isFromMe || CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) || (sender.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) && !CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`)))) ||
-                                 (CONFIG.app.mode === "public" && !private && (message.isFromMe || CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) || (sender.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) && !CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`)))) {
-                                  log("info", `${cmd_txt}`);
-                                await command.execute(message, conn, owner);
-                            }} catch (error) {
-                             log("error", `${cmd_txt}`, error);
-                              await message.reply(`${error.message}`);
-                        }}
-                  }} catch (error) {
-                log("error", error);
+if (messages.type !== 'notify') return;
+for (const msg of messages.messages) { 
+    try { let _msgs = JSON.parse(JSON.stringify(msg)); 
+        let message = serialize(_msgs, conn);
+        if (!message.message) continue;
+        if (message.key && message.key.remoteJid === 'status@broadcast') continue;
+        if (
+            message.type === 'protocolMessage' ||
+            message.type === 'senderKeyDistributionMessage' ||
+            !message.type ||
+            message.type === ''
+        ) continue;
+        const { sender, isGroup, text: chatmessage } = message;
+        log("info", `[USER]: ${sender}\n[CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}\n[MESSAGE]: ${chatmessage || "Media/Other"}`);
+        const owner = CONFIG.app.mods.includes(sender.split("@")[0]);
+        if (chatmessage.startsWith(">")) {
+            if (!owner) continue;
+            await EvalCode(chatmessage, message);
+        }} catch (error) {
+        log("error", error);
+    }
+    if (cmd_txt && cmd_txt.startsWith(control)) {
+        cmd_txt = cmd_txt.slice(control.length).trim();
+        const command = commands.find((c) => c.command === cmd_txt);
+        if (command) {
+            try {
+                if (
+                    (CONFIG.app.mode === "private" &&
+                        (message.isFromMe ||
+                            CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) ||
+                            (sender.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) &&
+                                !CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`)))) ||
+                    (CONFIG.app.mode === "public" &&
+                        !private &&
+                        (message.isFromMe ||
+                            CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) ||
+                            (sender.includes(`${message.user.split('@')[0]}@s.whatsapp.net`) &&
+                                !CONFIG.app.mods.includes(`${message.user.split('@')[0]}@s.whatsapp.net`))))
+                ) {
+                    log("info", `${cmd_txt}`);
+                    await command.execute(message, conn, owner);
+                }
+            } catch (error) {
+                log("error", `${cmd_txt}`, error);
+                await message.reply(`${error.message}`);
             }
-        });
+        }}}
 
 conn.ev.on("creds.update", saveCreds);       
   conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
