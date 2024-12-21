@@ -5,6 +5,7 @@ const {
     Browsers,
     delay,
 } = require("baileys");
+const { mongoDBAuthState } = require('./database/mongoose/session');
 const { serialize } = require("./lib/messages");
 const { eval: EvalCode } = require("./lib/eval");
 const Plugin = require('./database/plugins');
@@ -13,7 +14,6 @@ const CONFIG = require("./config");
 const chalk = require("chalk");
 const pino = require("pino");
 const { getMongoDB } = require('./database/start');
-const  mongooseAuthState = require('./database/init');
 const { makeInMemoryStore } = require("baileys");
 const { commands } = require("./lib/commands");
 const { exec } = require('child_process');
@@ -23,8 +23,9 @@ const store = makeInMemoryStore({
 
 getMongoDB(CONFIG);
 async function startBot() {
-    const access_key = await mongooseAuthState(CONFIG.app.session_name, store);
-    const { state, saveCreds } = access_key;
+    const db_session = await mongoDBAuthState(CONFIG.app.session_name, getSession);
+    if (db_session) {
+    const { state } = db_session;
     const conn = makeWASocket({
         auth: state,
         version: (await fetchLatestBaileysVersion()).version,
