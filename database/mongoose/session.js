@@ -1,11 +1,9 @@
 const mongoose = require('mongoose');
 const { initAuth } = require('whiskeySockets/baileys');
 const AuthState = require('./models/Auth');
-const mongo_url = 'mongodb+srv://Xcelsama:Xcel@xcelsama.qpklf.mongodb.net/?retryWrites=true&w=majority&appName=Xcelsama';
 
 function logAction(action, sessionId) {
-console.log(`[MongoDB] ${action} | Session ID: ${sessionId}`);
-}
+console.log(`[MongoDB] ${action} | Session ID: ${sessionId}`);}
 const mongoDBAuthState = async (sessionId, getSession) => {
     try {
      if (!sessionId.startsWith('Naxor~')) {
