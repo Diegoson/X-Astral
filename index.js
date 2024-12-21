@@ -82,7 +82,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
         }
     });
 
-conn.ev.on("creds.update", saveCreds);       
+conn.ev.on("creds.update", state);       
 conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
     const Settings = await settingz(id); const gcName = (await conn.groupMetadata(id)).subject; const timestamp = new Date().toLocaleString(); 
     for (const participant of participants) { 
