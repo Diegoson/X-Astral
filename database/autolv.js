@@ -16,13 +16,13 @@ async function maxUP(message, conn) {
     const user = await Levels.fetch(contact, 'global');
     if (user.levelUp) { 
       const img = await conn.profilePictureUrl(contact, 'image');
-      const category = maxUP(user.level); 
-      const max_send = `😝 **Level-Up** 😝\n**Pushname**: ${username}\n**🎈 Max Level**: ${user.level}\n**🎈 Category**: ${category}\nBoot up`;
+      const category = cxl(user.level); 
+      const max_send = `😝 **Level-Up** 😝\n**Username**: ${username}\n**🎈 Max Level**: ${user.level}\n**🎈 Category**: ${category}\nBoot up`;
       await conn.sendMessage(contact, { image: { url: img }, caption: max_send });
     }} catch (error) {
     console.error(error);
   }
 }
 
-module.exports = {  };
+module.exports = { maxUP };
     
