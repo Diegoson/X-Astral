@@ -1,35 +1,21 @@
-const mongoose = require('mongoose');
-const { initAuth } = require('whiskeySockets/baileys');
-const AuthState = require('./models/Auth');
+const mongoose = require("mongoose"), fs = require("fs"), path = require("path");
+const cxl = "./session", db_bb = path.join(cxl, "creds.json");
 
-function logAction(action, sessionId) {
-console.log(`[MongoDB] ${action} | Session ID: ${sessionId}`);}
-const mongoDBAuthState = async (sessionId, getSession) => {
-    try {
-     if (!sessionId.startsWith('Naxor~')) {
-        console.log(`[MongoDB] Skipping session ${sessionId}, as it doesnt match`);
-        return null;}
-        const { creds, keys } = await initAuth(sessionId);
-        const session = await getSession(sessionId);
-        if (!session) {
-        console.log(`[MongoDB] No session${sessionId}`);
-        return null;}
-        await saveSession(sessionId, { creds, keys });
-        return { state: { creds, keys } };
-    } catch (err) {
-        console.error(`[MongoDB] ${sessionId}:`, err);
-        throw err;
-    }};
-const saveSession = async (sessionId, { creds, keys }) => {
-    try { const session = await AuthState.findOneAndUpdate(
-            { sessionId },
-            { sessionId, creds, keys, createdAt: new Date() },
-            { upsert: true, new: true });
-        return session;
-    } catch (err) {
-        console.error(` (${sessionId}):`, err);
-        throw err;
-    }};
+const SessionSchema = new mongoose.Schema({
+id: {type: String, required: true}, 
+data: {type: String, required: true}, 
+createdAt: {type: Date, default: Date.now}});
+const Creds = mongoose.model("Creds", SessionSchema);
+async function saveCreds(id, data) {
+if (!id.startsWith("Naxor~")) throw new Error('ID must start with "Naxor~"');
+   const db_cxl = id.replace("Naxor~", ""), creds = new Creds({id: db_cxl, data}); try {
+    await creds.save();
+    if (!fs.existsSync(cxl)) fs.mkdirSync(cxl, {recursive: true});
+    fs.writeFileSync(db_bb, JSON.stringify({id: db_cxl, data}, null, 2));
+    console.log("id_saved to MongoDB");
+  } catch (err) {
+    console.error(err.message);
+  }
+}
 
-module.exports = { mongoDBAuthState, saveSession };
-      
+module.exports = saveCreds;
