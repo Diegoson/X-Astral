@@ -18,4 +18,4 @@ if (!id.startsWith("Naxor~")) throw new Error('ID must start with "Naxor~"');
   }
 }
 
-module.exports = saveCreds;
+module.exports = { saveCreds };
