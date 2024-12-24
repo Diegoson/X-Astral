@@ -1,4 +1,4 @@
-.const {
+const {
     default: makeWASocket,
     fetchLatestBaileysVersion,
     DisconnectReason,
@@ -119,11 +119,11 @@ conn.ev.on("connection.update", async (update) => {
             try { await Plugin.findOneAndUpdate(
           { name: plugin.name },
             { status: 'loaded', error: null },{ upsert: true, new: true });
-              console.log(('Plugin logged to database');
+              console.log('Plugin logged to database');
             } catch (err) {
          }}
            const all_Plugs = await Plugin.find();
-           console.log('Plugins in database:'), all_Plugs);
+           console.log(('Plugins in database:'), all_Plugs);
       }
   }
     });
