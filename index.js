@@ -1,4 +1,4 @@
-const {
+.const {
     default: makeWASocket,
     fetchLatestBaileysVersion,
     DisconnectReason,
@@ -13,6 +13,7 @@ const { settingz } = require('./database/group');
 const { getPlugins } = require("./database/getPlugins");
 const CONFIG = require("./config");
 const chalk = require("chalk");
+const { maxUP } = require('./database/autolv');
 const pino = require("pino");
 const { saveCreds } = require('./database/mongoose/session');
 const { getMongoDB } = require('./database/start');
@@ -55,6 +56,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
                 !message.type ||
                 message.type === ""
             ) return;
+             await maxUP(message, conn);
             const { sender, isGroup, body } = message;
             if (!body) return;
             const owner = CONFIG.app.mods.includes(sender.split("@")[0]);
