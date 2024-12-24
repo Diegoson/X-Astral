@@ -6,7 +6,6 @@ const {
     Browsers,
     delay,
 } = require("baileys");
-const { mongoDBAuthState } = require('./database/mongoose/session');
 const { serialize } = require("./lib/messages");
 const { eval: EvalCode } = require("./lib/eval");
 const Plugin = require('./database/plugins');
