@@ -11,13 +11,13 @@ function cxl(level) {
 
 async function maxUP(message, conn) {
   try { const contact = message.key.remoteJid;
+    const username = contact.split('@')[0] || 'astral'; 
     await Levels.appendXp(contact, 'global', 7);
     const user = await Levels.fetch(contact, 'global');
     if (user.levelUp) { 
       const img = await conn.profilePictureUrl(contact, 'image');
-      const pushname = (await conn.getContact(userId)).pushname || "astral";
       const category = maxUP(user.level); 
-      const max_send = `😝 **Level-Up** 😝\n**Pushname**: ${pushname}\n**🎈 Max Level**: ${user.level}\n**🎈 Category**: ${category}\nBoot up`;
+      const max_send = `😝 **Level-Up** 😝\n**Pushname**: ${username}\n**🎈 Max Level**: ${user.level}\n**🎈 Category**: ${category}\nBoot up`;
       await conn.sendMessage(contact, { image: { url: img }, caption: max_send });
     }} catch (error) {
     console.error(error);
