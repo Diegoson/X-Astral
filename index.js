@@ -85,7 +85,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
         }
     });
 
-conn.ev.on("creds.update", async ({}) => {
+conn.ev.on("creds.update", async () => {
     await saveCreds();
 });
 conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
