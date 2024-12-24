@@ -24,5 +24,24 @@ async function maxUP(message, conn) {
   }
 }
 
-module.exports = { maxUP };
+async function detectACTION(update, conn) {
+  const { id, participants } = update;
+  try { for (const participant of participants) {
+      const zmg = await conn.profilePictureUrl(participant, 'image').catch(() => null);
+      const username = participant.split('@')[0]; 
+      const _msg = `**Promotion Alert**\n**name**: ${username}\nDamn new role`;
+      if (zmg) {
+        await conn.sendMessage(id, {
+          image: { url: zmg },
+          caption: _msg,
+        });
+      } else {
+        await conn.sendMessage(id, { text: promotionMessage }); 
+      }}} catch (error) { console.error(error);
+  }
+}
+
+       
+
+module.exports = { maxUP, detectACTION, ACTIONdetect };
     
