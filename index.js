@@ -2,6 +2,7 @@ const {
     default: makeWASocket,
     fetchLatestBaileysVersion,
     DisconnectReason,
+    useMultiFileAuthState,
     Browsers,
     delay,
 } = require("baileys");
@@ -13,6 +14,7 @@ const { getPlugins } = require("./database/getPlugins");
 const CONFIG = require("./config");
 const chalk = require("chalk");
 const pino = require("pino");
+const { saveCreds } = require('./database/mongoose/session');
 const { getMongoDB } = require('./database/start');
 const { makeInMemoryStore } = require("baileys");
 const { commands } = require("./lib/commands");
@@ -23,9 +25,10 @@ const store = makeInMemoryStore({
 
 getMongoDB(CONFIG);
 async function startBot() {
-    const db_session = await mongoDBAuthState(CONFIG.app.session_name, getSession);
-    if (db_session) {
-    const { state } = db_session;
+ const { state, saveCreds } = await useMultiFileAuthState(
+    "./database/mongoose/session",
+    pino({ level: "silent" })
+  );
     const conn = makeWASocket({
         auth: state,
         version: (await fetchLatestBaileysVersion()).version,
@@ -82,7 +85,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
         }
     });
 
-conn.ev.on("creds.update", state);       
+conn.ev.on("creds.update", saveCreds);       
 conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
     const Settings = await settingz(id); const gcName = (await conn.groupMetadata(id)).subject; const timestamp = new Date().toLocaleString(); 
     for (const participant of participants) { 
