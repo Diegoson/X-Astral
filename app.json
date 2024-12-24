@@ -23,6 +23,6 @@
 	"MONGODB_URL": {
 		"description": "mongo string url_required",
 		"required": true
-	},
+	}
 }
   }
