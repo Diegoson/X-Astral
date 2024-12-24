@@ -1,24 +1,18 @@
 const { CreatePlug } = require('../lib/commands');
+const Ping = require('../database/Ping');
 
 CreatePlug({
     command: 'ping',
-    category: 'misc', 
-    desc: 'Check bot latency', 
+    category: 'misc',
+    desc: 'Check bot latency',
     execute: async (message, conn) => {
-        try {
-            if (!message || !message.user) {
-                throw new Error('Message object or user is undefined.');}
-            const start = Date.now(); 
-            await conn.send(message.user, { text: '```Ping!```' }); 
-            const end = Date.now(); 
-            const latency = end - start; 
-            await conn.send(message.user, { 
-                text: `*Pong!*\n \`\`\`${latency}\`\`\` *ms*`
-            });
-        } catch (error) {
-             await conn.send(message.user || 'default', {
-                text: `\n${error.message}`,
-            });
-        }
-    },
+        const startTime = Date.now();
+        await conn.send(message.user, { text: 'Ping...' });
+        const endTime = Date.now();
+        new Ping({ start: startTime, end: endTime })
+            .save()
+            .then(pingData => conn.send(message.user, { text: `Pong!: ${pingData.duration} ms` }))
+            .catch(() => conn.send(message.user, { text: `err` }));
+    }
 });
+            
