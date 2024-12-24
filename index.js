@@ -9,13 +9,14 @@ const {
 const { serialize } = require("./lib/messages");
 const { eval: evaluate } = require("./lib/eval");
 const Plugin = require('./database/plugins');
+const { settingz } = require('./database/group');
 const { getPlugins } = require("./database/getPlugins");
 const CONFIG = require("./config");
 const chalk = require("chalk");
 const pino = require("pino");
 const { saveCreds } = require('./database/mongoose/session');
 const { getMongoDB } = require('./database/start');
-const { makeInMemoryStore } = require("baileys");
+const { makeInMemoryStore } = require("@whiskeysockets/baileys");
 const { commands } = require("./lib/commands");
 const { exec } = require('child_process');
 const store = makeInMemoryStore({
