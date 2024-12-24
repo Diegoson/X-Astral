@@ -13,7 +13,7 @@ const { settingz } = require('./database/group');
 const { getPlugins } = require("./database/getPlugins");
 const CONFIG = require("./config");
 const chalk = require("chalk");
-const { maxUP } = require('./database/autolv');
+const { maxUP, detectACTION } = require('./database/autolv');
 const pino = require("pino");
 const { saveCreds } = require('./database/mongoose/session');
 const { getMongoDB } = require('./database/start');
@@ -90,7 +90,8 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
 conn.ev.on("creds.update", async () => {
     await saveCreds();
 });
-conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
+conn.ev.on("group-participants.update", async ({ update,id, participants, action }) => {
+    await detectACTION(update);
     const Settings = await settingz(id); const gcName = (await conn.groupMetadata(id)).subject; const timestamp = new Date().toLocaleString(); 
     for (const participant of participants) { 
         try { const pp = await conn.profilePictureUrl(participant, "image").catch(() => null); 
