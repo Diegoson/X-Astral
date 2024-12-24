@@ -5,9 +5,9 @@ const {
     useMultiFileAuthState,
     Browsers,
     delay,
-} = require("baileys");
+} = require("@whiskeysockets/baileys");
 const { serialize } = require("./lib/messages");
-const { eval: EvalCode } = require("./lib/eval");
+const { eval: evaluate } = require("./lib/eval");
 const Plugin = require('./database/plugins');
 const { getPlugins } = require("./database/getPlugins");
 const CONFIG = require("./config");
