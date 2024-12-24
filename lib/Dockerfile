@@ -1,11 +1,6 @@
-FROM node:18.16.0-bullseye-slim
-RUN apt-get update && \
-    apt-get install -y \
-    ffmpeg \
-    webp && \
-    apt-get upgrade -y && \
-    rm -rf /var/lib/apt/lists/*
-RUN git clone https://github.com/Diegoson/X-Astral.git /X-Astral
-WORKDIR /X-Astral
+FROM quay.io/vorterx/vorterx:latest
+RUN git clone https://github.com/Diegoson/X-Astral /root/vorterx
+WORKDIR /root/vorterx/
 RUN npm install
+EXPOSE 8000
 CMD ["npm", "start"]
