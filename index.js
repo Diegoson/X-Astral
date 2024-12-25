@@ -29,7 +29,7 @@ async function startBot() {
  const { state, saveCreds } = await useMultiFileAuthState(
     "./database/mongoose/session",
     pino({ level: "silent" })
-  );
+  ); console.log(saveCreds);
     const conn = makeWASocket({
         auth: state,
         version: (await fetchLatestBaileysVersion()).version,
