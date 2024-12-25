@@ -4,7 +4,7 @@ dotenv.config({path: path.resolve(__dirname, `${process.env.NODE_ENV || 'develop
 
 const CONFIG = {
     app: {
-        session_name: process.env.SESSION_NAME || '',
+        session_name: process.env.SESSION_NAME || 'Naxor~f17f29aed7360244',
         botname: process.env.BOTNAME || 'X-ASTRAL',
         base_url: process.env.BASE_URL || 'https://api.yanzbotz.live/',
         mongodb: process.env.MONGODB_URL || '',
