@@ -78,80 +78,26 @@ CreatePlug({
     command: 'tagall',
     category: 'group',
     desc: 'Mention all with tags',
-    execute: async (message, conn) => {
+    execute: async (message,conn) => {
         if (!message.isGroup) return;
         if (!message.isBotAdmin) return;
-        if (!message.groupAdmins.includes(message.sender)) {
-            return;
-        }try {
-            const groupMetadata = await conn.groupMetadata(message.user);
-            const participants = groupMetadata.participants;
-            const mentions = participants.map((participant, index) => {
-                return { id: participant.id, tag: `${index + 1} @${participant.id.split('@')[0]}` };
-            });
-            const msg = mentions.map(m => m.tag).join('\n');
-            await conn.send(message.user, { text: msg, mentions: mentions.map(m => m.id) }, { quoted: message });
-            return;
-        } catch (err) {
-            console.error(err);
-            return;
-        }
+        if (!message.groupAdmins.includes(message.sender)) return;
+        const groupMetadata = await conn.groupMetadata(message.user);
+        const participants = groupMetadata.participants;
+        const mentions = participants.map((participant, index) => ({
+            id: participant.id,
+            tag: `${index + 1} @${participant.id.split('@')[0]}`}));
+        const _mgs = message.body.slice(message.body.indexOf(' ') + 1).trim();
+        const msg = `${_mgs}\n\n${mentions.map(m => m.tag).join('\n')}`;
+        await conn.send(
+            message.user,
+            { text: msg, mentions: mentions.map(m => m.id) },
+            { quoted: message }
+        );
     }
 });
-
-
+              
 CreatePlug({
-    command: 'ban',
-    category: 'group',
-    desc: 'Ban a user from the group',
-    execute: async (message, conn) => {
-        if (!message.isGroup) return;
-        if (!message.isBotAdmin) return message.reply('not admin');
-        if (!message.groupAdmins.includes(message.sender)) {
-            return;
-        }
-        const men = message.mentions[0];
-        if (!men) return message.reply('mention_user');
-        await conn.groupParticipantsUpdate(message.user, [men], 'remove');
-        return message.reply(`Banned ${men}`);
-    }
-});
-
-
-CreatePlug({
-    command: 'promote',
-    category: 'group',
-    desc: 'Promote a user to admin',
-    execute: async (message, conn) => {
-        if (!message.isGroup) return;
-        if (!message.isBotAdmin) return;
-        if (!message.groupAdmins.includes(message.sender)) {
-            return;}
-        const users = message.mentions[0];
-        if (!users) return message.reply('mention a usr');
-        await conn.groupParticipantsUpdate(message.user, [users], 'promote');
-        return;
-    }
-});
-                        
-
-CreatePlug({
-    command: 'demote',
-    category: 'group',
-    desc: 'Demote a user from admin',
-    execute: async (message, conn) => {
-        if (!message.isGroup) return;
-        if (!message.isBotAdmin) return message.reply('not admin');
-        if (!message.groupAdmins.includes(message.sender)) {
-            return;}
-        const users = message.mentions[0];
-        if (!users) return message.reply('mention a user');
-        await conn.groupParticipantsUpdate(message.user, [users], 'demote');
-        return;
-    }
-});
-
-    CreatePlug({
     command: 'info',
     category: 'group',
     desc: 'Get information about the group',
