@@ -20,7 +20,26 @@ CreatePlug({
     }
 });
 
-
+CreatePlug({
+    command: 'demote',
+    category: 'group',
+    desc: 'Demote admins to members',
+    execute: async (message, conn, match) => {
+        if (!message.isGroup) return; if (!message.isBotAdmin) return message.reply('_I am not an admin_');
+        if (!message.groupAdmins.includes(message.sender)) return;
+        const groupMetadata = await conn.groupMetadata(message.user);
+        const mentionJid = message.mentions; if (!mentionJid || mentionJid.length === 0) return message.reply('Please tag a user');
+        for (const username of mentionJid) {
+            const participant = groupMetadata.participants.find(p => p.id === username);
+            if (!participant) { message.reply(`@${username.split('@')[0]} not in_group`, null, { mentions: [username] }); continue; }
+            if (!participant.admin) { message.reply(`@${username.split('@')[0]} not_admin`, null, { mentions: [username] }); continue; }
+            await conn.groupParticipantsUpdate(message.user, [username], 'demote')
+                .then(() => message.reply(`@${username.split('@')[0]} demoted`, null, { mentions: [username] }))
+                .catch(err => message.reply(`${err}`, null, { mentions: [username] }));
+        }
+    }
+});
+    
 CreatePlug({
     command: 'kick',
     category: 'group',
