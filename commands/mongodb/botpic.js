@@ -2,7 +2,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const cxl = './packs.json';
-async function botpic() {
+async function pack() {
   const data = await fs.promises.readFile(cxl, 'utf8');
   const _msg = JSON.parse(data);
   const _naxor = parseInt(crypto.randomBytes(4).toString('hex'), 16) % _msg.IMAGES.length;
@@ -11,8 +11,8 @@ async function botpic() {
     url: _image.url,
     name: _image.name
   };
-  return botpicObj;
+  return Obj;
 }
 
-module.exports = { botpic };
+module.exports = { pack };
     
