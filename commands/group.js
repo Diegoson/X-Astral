@@ -1,6 +1,27 @@
 const { CreatePlug } = require('../lib/commands');
 
 CreatePlug({
+    command: 'promote',
+    category: 'group',
+    desc: 'Promote users to admin',
+    execute: async (message, conn, match) => {
+        if (!message.isGroup) return; if (!message.isBotAdmin) return message.reply('$I am not an admin_');
+        if (!message.groupAdmins.includes(message.sender)) return;
+        const groupMetadata = await conn.groupMetadata(message.user);
+        const cxl = message.mentions; if (!cxl || cxl.length === 0) return message.reply('_Please tag member_');
+        for (const username of cxl) {
+            const participant = groupMetadata.participants.find(p => p.id === username);
+            if (!participant) { message.reply(`@${username.split('@')[0]} not_in group`, null, { mentions: [username] }); continue; }
+            if (participant.admin) { message.reply(`@${username.split('@')[0]} already an admin`, null, { mentions: [username] }); continue; }
+            await conn.groupParticipantsUpdate(message.user, [username], 'promote')
+                .then(() => message.reply(`@${username.split('@')[0]} promoted`, null, { mentions: [username] }))
+                .catch(err => message.reply(`${err}`, null, { mentions: [username] }));
+        }
+    }
+});
+
+
+CreatePlug({
     command: 'kick',
     category: 'group',
     desc: 'Remove a user from the group',
