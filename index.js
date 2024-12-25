@@ -126,7 +126,7 @@ conn.ev.on("connection.update", async (update) => {
            const all_Plugs = await Plugin.find();
            console.log(('Plugins in database:'), all_Plugs);
       }
-  }
-    });
+  })
+    };
                
 startBot();
