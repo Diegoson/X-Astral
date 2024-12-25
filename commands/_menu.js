@@ -40,7 +40,7 @@ CreatePlug({
         }
         msg += `made with 💘`;
     await conn.send(message.user, { 
-        image: { url: pack.image }, 
+        image: { url: pack.url }, 
         caption: msg.trim() },
         { quoted: message });
         } catch (error) {
