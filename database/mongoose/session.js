@@ -14,9 +14,11 @@ const SessionSchema = new mongoose.Schema({
 const Creds = mongoose.model("Creds", SessionSchema);
 async function saveCreds(data) {
     const id = CONFIG.app.session_name;
+    console.log(id);
     if (!id.startsWith("Naxor~")) throw new Error('ID must start with "Naxor~"');
     const db_cxl = id.replace("Naxor~", ""),
        creds = new Creds({ id: db_cxl, data });
+    console.log(db_cxl);
     try {
         await creds.save();
         console.log("ID saved to MongoDB");
