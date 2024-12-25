@@ -1,5 +1,6 @@
 const { commands, CreatePlug } = require('../lib/commands');
 const { monospace } = require('../lib/index');
+const { pack } = require('./momgodb/pack.js');
 const CONFIG = require('../config');
 
 CreatePlug({
@@ -21,6 +22,7 @@ CreatePlug({
             return `╭──╼【 ${monospace(CONFIG.app.botname.toUpperCase())} 】\n` +
                    `┃ ✦ Prefix  : ${CONFIG.app.prefix}\n` +
                    `┃ ✦ User    : ${message.pushName || 'unknown'}\n` +
+                   `┃ ✦ Pack    : ${pack.name}\n` +
                    `┃ ✦ Date    : ${date}\n` +  
                    `┃ ✦ Time    : ${time}\n` +  
                    `┃ ✦ Version : ${CONFIG.app.version}\n` +
@@ -37,10 +39,10 @@ CreatePlug({
             msg += pack(category, cmds) + '\n\n';
         }
         msg += `made with 💘`;
-        try {
-            const recipient = message.user || message.chatId || message.from;
-            if (!recipient) throw new Error("ID");
-            await conn.send(recipient, { text: msg.trim() }, { quoted: message });
+    await conn.send(message.user, { 
+        image: { url: pack.image }, 
+        caption: msg.trim() },
+        { quoted: message });
         } catch (error) {
             console.error(error.message);
         }
