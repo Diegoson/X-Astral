@@ -16,6 +16,7 @@ const CONFIG = require("./config");
 const chalk = require("chalk");
 const { maxUP, detectACTION } = require('./database/autolv');
 const pino = require("pino");
+const path = require('path');
 const fs = require('fs');
 const { getMongoDB } = require('./database/start');
 const { makeInMemoryStore } = require("@whiskeysockets/baileys");
@@ -27,7 +28,7 @@ const store = makeInMemoryStore({
 
 getMongoDB();
 async function connecto() {
-    const cxl = `./lib/auth_info_baileys/creds.json`;
+    const cxl = path.join(__dirname, 'lib', 'auth_info_baileys', 'creds.json');
     if (fs.existsSync(cxl)) { console.log('Session file exists');
     return;}
     const fetchit = CONFIG.app.session_name || "";
