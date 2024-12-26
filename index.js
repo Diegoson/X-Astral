@@ -3,6 +3,7 @@ const {
     fetchLatestBaileysVersion,
     DisconnectReason,
     useMultiFileAuthState,
+    makeCacheableSignalKeyStore,
     Browsers,
     delay,
 } = require("@whiskeysockets/baileys");
