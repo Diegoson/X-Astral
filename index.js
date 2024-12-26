@@ -16,6 +16,7 @@ const CONFIG = require("./config");
 const chalk = require("chalk");
 const { maxUP, detectACTION } = require('./database/autolv');
 const pino = require("pino");
+const fs = require('fs');
 const { getMongoDB } = require('./database/start');
 const { makeInMemoryStore } = require("@whiskeysockets/baileys");
 const { commands } = require("./lib/commands");
@@ -47,7 +48,7 @@ async function startBot() {
         logger: pino({ level: "silent" }),
         auth: {
              creds: state.creds,
-	     keys: makeCacheableSignalKeyStore(state.keys, logger),
+	     keys: makeCacheableSignalKeyStore(state.keys, store),
 	    },	
     });
 
