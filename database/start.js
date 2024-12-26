@@ -11,7 +11,7 @@ async function getMongoDB() {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         })
-        .then(() => console.log('Connected to MongoDB 🌍'))
+        .then(() => )
         .catch((error) => {
             console.error(`${error.message}`);
             process.exit(1); 
