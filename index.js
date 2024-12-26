@@ -15,7 +15,6 @@ const CONFIG = require("./config");
 const chalk = require("chalk");
 const { maxUP, detectACTION } = require('./database/autolv');
 const pino = require("pino");
-const { saveCreds } = require('./database/mongoose/session');
 const { getMongoDB } = require('./database/start');
 const { makeInMemoryStore } = require("@whiskeysockets/baileys");
 const { commands } = require("./lib/commands");
