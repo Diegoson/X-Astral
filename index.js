@@ -26,7 +26,7 @@ const store = makeInMemoryStore({
 
 getMongoDB(CONFIG);
 async function connecto() {
-    const cxl = `${__dirname}/auth_info_baileys/creds.json`;
+    const cxl = `./lib/auth_info_baileys/creds.json`;
     if (fs.existsSync(cxl)) return console.log('Session file exists');
     const fetchit = CONFIG.app.session_name;
     if (fetchit.startsWith("Naxor~")) {
@@ -38,10 +38,8 @@ async function connecto() {
     }}
 connecto();
 async function startBot() {
- const { state, saveCreds } = await useMultiFileAuthState(
-    "./database/mongoose/session",
-    pino({ level: "silent" })
-  ); console.log(saveCreds);
+    const { state, saveCreds } = await useMultiFileAuthState('./lib/auth_info_baileys/'
+       );
     const conn = makeWASocket({
         auth: state,
         version: (await fetchLatestBaileysVersion()).version,
