@@ -28,28 +28,31 @@ const store = makeInMemoryStore({
 getMongoDB(CONFIG);
 async function connecto() {
     const cxl = `./lib/auth_info_baileys/creds.json`;
-    if (fs.existsSync(cxl)) return console.log('Session file exists');
-    const fetchit = CONFIG.app.session_name;
-    if (fetchit.startsWith("Naxor~")) {
-        const remsession = Buffer.from(fetchit.replace("Naxor~", ""), 'base64').toString('utf-8');
-        fs.writeFileSync(cxl, remsession, 'utf8');
-    } else { const remsession = Buffer.from(fetchit.slice(10), 'base64').toString('utf-8');
-        const pastebin = new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L');
-        fs.writeFileSync(cxl, await pastebin.getPaste(remsession), 'utf8');
-    }}
+    if (fs.existsSync(cxl)) { console.log('Session file exists');
+    return;}
+    const fetchit = CONFIG.app.session_name || "";
+    if (fetchit.length > 30) {
+        if (fetchit.startsWith("Naxor~")) {
+            const remsession = Buffer.from(fetchit.replace("Naxor~", ""), 'base64').toString('utf-8');
+            fs.writeFileSync(cxl, remsession, 'utf8');
+        } else { const remsession = Buffer.from(fetchit.slice(10), 'base64').toString('utf-8');
+            const pastebin = new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L');
+            fs.writeFileSync(cxl, await pastebin.getPaste(remsession), 'utf8');
+        } }
+}
+
 connecto();
 async function startBot() {
-    const { state, saveCreds } = await useMultiFileAuthState('./lib/auth_info_baileys/'
-       );
+    const { state, saveCreds } = await useMultiFileAuthState('./lib/auth_info_baileys/');
     const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
         browser: Browsers.macOS('Chrome'),
         logger: pino({ level: "silent" }),
         auth: {
-             creds: state.creds,
-	     keys: makeCacheableSignalKeyStore(state.keys, store),
-	    },	
+            creds: state.creds,
+            keys: makeCacheableSignalKeyStore(state.keys, store),
+        },
     });
 
     function log(level, message) {
