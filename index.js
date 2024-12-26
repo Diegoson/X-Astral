@@ -43,6 +43,12 @@ async function connecto() {
 }
 
 connecto();
+async function _approve(){
+  if (!fs.existsSync(__dirname 'lib', 'auth_info_baileys', 'creds.json') {
+	}try{ 
+        getMongoDB();
+}catch{ console.log('Cannont connect to mongo_');
+ } }
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('./lib/auth_info_baileys/');
     const conn = makeWASocket({
