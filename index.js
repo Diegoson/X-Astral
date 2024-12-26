@@ -25,7 +25,7 @@ const store = makeInMemoryStore({
     logger: pino().child({ level: "silent", stream: "store" }),
 });
 
-getMongoDB(CONFIG);
+getMongoDB();
 async function connecto() {
     const cxl = `./lib/auth_info_baileys/creds.json`;
     if (fs.existsSync(cxl)) { console.log('Session file exists');
