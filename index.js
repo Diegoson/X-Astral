@@ -26,7 +26,6 @@ const store = makeInMemoryStore({
     logger: pino().child({ level: "silent", stream: "store" }),
 });
 
-getMongoDB();
 async function connecto() {
     const cxl = path.join(__dirname, 'lib', 'auth_info_baileys', 'creds.json');
     if (fs.existsSync(cxl)) { console.log('Session file exists');
@@ -43,14 +42,21 @@ async function connecto() {
 }
 
 connecto();
-async function _approve(){
-  if (!fs.existsSync(__dirname 'lib', 'auth_info_baileys', 'creds.json') {
-	}try{ 
-        getMongoDB();
-}catch{ console.log('Cannont connect to mongo_');
- } }
+async function _approve() {
+    const _callback = path.join(__dirname, 'lib', 'auth_info_baileys', 'creds.json');    
+    if (!fs.existsSync(_callback)) {
+      return; 
+    } try {
+        await getMongoDB();
+        console.log('Connected to MongoDB🌍');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+_approve();
 async function startBot() {
-    const { state, saveCreds } = await useMultiFileAuthState('./lib/auth_info_baileys/');
+    const { state, saveCreds } = await useMultiFileAuthState(__dirname,
+		'lib','auth_info_baileys');
     const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
