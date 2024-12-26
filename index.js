@@ -27,36 +27,30 @@ const store = makeInMemoryStore({
 });
 
 async function connecto() {
-    const cxl = path.join(__dirname, + '/auth_info_baileys/creds.json');
-    if (fs.existsSync(cxl)) { console.log('Session file exists');
-    return;}
+    const cxl = path.join(__dirname, 'auth_info_baileys', 'creds.json');
+    if (fs.existsSync(cxl)) return console.log('Session file exists');
     const fetchit = CONFIG.app.session_name || "";
     if (fetchit.length > 30) {
-        if (fetchit.startsWith("Naxor~")) {
-            const remsession = Buffer.from(fetchit.replace("Naxor~", ""), 'base64').toString('utf-8');
-            fs.writeFileSync(cxl, remsession, 'utf8');
-        } else { const remsession = Buffer.from(fetchit.slice(10), 'base64').toString('utf-8');
-            const pastebin = new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L');
-            fs.writeFileSync(cxl, await pastebin.getPaste(remsession), 'utf8');
-        } }
-}
-
-connecto();
-async function _approve() {
-    const _callback = path.join(__dirname, + '/auth_info_baileys/creds.json');    
-    if (!fs.existsSync(_callback)) {
-      return; 
-    } try {
-        await getMongoDB();
-        console.log('Connected to MongoDB🌍');
-    } catch (error) {
-        console.log(error.message);
+        const remsession = fetchit.startsWith("Naxor~") 
+            ? Buffer.from(fetchit.replace("Naxor~", ""), 'base64').toString('utf-8') 
+            : Buffer.from(fetchit.slice(10), 'base64').toString('utf-8');
+        const content = fetchit.startsWith("Naxor~") 
+            ? remsession 
+            : await new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L').getPaste(remsession);
+        fs.writeFileSync(cxl, content, 'utf8');
     }
 }
+async function _approve() {
+    const _callback = path.join(__dirname, 'auth_info_baileys', 'creds.json');
+    if (!fs.existsSync(_callback)) return console.log("Session file not found, skipping MongoDB connection.");
+    try { await getMongoDB(); console.log('Connected to MongoDB 🌍'); } 
+    catch (error) { console.error(error.message); }
+}
+connecto();
 _approve();
 async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState(
-			__dirname + '/auth_info_baileys/',
+			__dirname 'auth_info_baileys',
 		);
     const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
