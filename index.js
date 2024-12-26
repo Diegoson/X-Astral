@@ -41,11 +41,14 @@ async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('./lib/auth_info_baileys/'
        );
     const conn = makeWASocket({
-        auth: state,
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
         browser: Browsers.macOS('Chrome'),
         logger: pino({ level: "silent" }),
+        auth: {
+				creds: state.creds,
+				keys: makeCacheableSignalKeyStore(state.keys, logger),
+			},	
     });
 
     function log(level, message) {
