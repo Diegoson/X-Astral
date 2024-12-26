@@ -10,7 +10,7 @@ const CONFIG = {
         mongodb: process.env.MONGODB_URL || '',
         version: require('./package.json').version,
         env: process.env.NODE_ENV || 'development',
-        prefix: process.env.COMMAND_PREFIX || '/',
+        prefix: process.env.COMMAND_PREFIX || '?',
         mode: process.env.MODE || 'private',
         mods: process.env.MODS || '27686881509,27686567257'
     },
