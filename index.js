@@ -55,8 +55,7 @@ async function _approve() {
 }
 _approve();
 async function startBot() {
-    const { state, saveCreds } = await useMultiFileAuthState(__dirname,
-		'lib','auth_info_baileys');
+    const { state, saveCreds } = await useMultiFileAuthState(__dirname,'lib','auth_info_baileys');
     const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
