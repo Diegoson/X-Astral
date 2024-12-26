@@ -28,25 +28,27 @@ const store = makeInMemoryStore({
 
 async function connecto() {
     const cxl = path.join(__dirname, 'auth_info_baileys', 'creds.json');
-    if (fs.existsSync(cxl)) return console.log('Session file exists');
-    const fetchit = CONFIG.app.session_name || "";
-    if (fetchit.length > 30) {
-        const remsession = fetchit.startsWith("Naxor~") 
-            ? Buffer.from(fetchit.replace("Naxor~", ""), 'base64').toString('utf-8') 
-            : Buffer.from(fetchit.slice(10), 'base64').toString('utf-8');
-        const content = fetchit.startsWith("Naxor~") 
-            ? remsession 
-            : await new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L').getPaste(remsession);
-        fs.writeFileSync(cxl, content, 'utf8');
+    if (!fs.existsSync(cxl)) {
+        const fetchit = CONFIG.app.session_name || "";
+        if (fetchit.length > 30) {
+            const remsession = fetchit.startsWith("Naxor~") 
+                ? Buffer.from(fetchit.replace("Naxor~", ""), 'base64').toString('utf-8') 
+                : Buffer.from(fetchit.slice(10), 'base64').toString('utf-8');
+            const content = fetchit.startsWith("Naxor~") 
+                ? remsession 
+                : await new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L').getPaste(remsession);
+            fs.writeFileSync(cxl, content, 'utf8');
+        }
     }
+    return cxl; 
 }
+
 async function _approve() {
-    const _callback = path.join(__dirname, 'auth_info_baileys', 'creds.json');
-    if (!fs.existsSync(_callback)) return console.log("Session file not found, skipping MongoDB connection.");
+    const _callback = await connecto(); 
+    if (!fs.existsSync(_callback)) return console.log("Session file not found.");
     try { await getMongoDB(); console.log('Connected to MongoDB 🌍'); } 
-    catch (error) { console.error(error.message); }
+    catch (error) { console.error('Error connecting to MongoDB:', error.message); }
 }
-connecto();
 _approve();
 async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState(
