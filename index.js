@@ -46,9 +46,9 @@ async function startBot() {
         browser: Browsers.macOS('Chrome'),
         logger: pino({ level: "silent" }),
         auth: {
-				creds: state.creds,
-				keys: makeCacheableSignalKeyStore(state.keys, logger),
-			},	
+             creds: state.creds,
+	     keys: makeCacheableSignalKeyStore(state.keys, logger),
+	    },	
     });
 
     function log(level, message) {
