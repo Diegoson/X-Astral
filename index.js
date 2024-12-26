@@ -27,7 +27,7 @@ const store = makeInMemoryStore({
 });
 
 async function connecto() {
-    const cxl = path.join(__dirname, 'lib', 'auth_info_baileys', 'creds.json');
+    const cxl = path.join(__dirname, + '/auth_info_baileys/creds.json');
     if (fs.existsSync(cxl)) { console.log('Session file exists');
     return;}
     const fetchit = CONFIG.app.session_name || "";
@@ -43,7 +43,7 @@ async function connecto() {
 
 connecto();
 async function _approve() {
-    const _callback = path.join(__dirname, 'lib', 'auth_info_baileys', 'creds.json');    
+    const _callback = path.join(__dirname, + '/auth_info_baileys/creds.json');    
     if (!fs.existsSync(_callback)) {
       return; 
     } try {
@@ -55,7 +55,9 @@ async function _approve() {
 }
 _approve();
 async function startBot() {
-    const { state, saveCreds } = await useMultiFileAuthState(__dirname,'lib','auth_info_baileys');
+  const { state, saveCreds } = await useMultiFileAuthState(
+			__dirname + '/auth_info_baileys/',
+		);
     const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
