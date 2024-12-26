@@ -10,9 +10,7 @@ async function getMongoDB() {
         .connect(mongo_url, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-        })
-        .then(() => )
-        .catch((error) => {
+        }) .catch((error) => {
             console.error(`${error.message}`);
             process.exit(1); 
         });
