@@ -36,29 +36,24 @@ async function connecto() {
         const content = fetchit.startsWith("Naxor~") 
             ? remsession 
             : await new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L').getPaste(remsession);
-        fs.writeFileSync(cxl, content, 'utf8'); 
-    }
-}
-
+        fs.writeFileSync(cxl, content, 'utf8');
+    }}
 async function _approve() {
     const sessionExists = fs.existsSync(path.join(__dirname, 'auth_info_baileys', 'creds.json'));
     if (!sessionExists) {
         console.log("Session not found. Setting up...");
         await connecto();
-    } try { 
+    }try { 
         await getMongoDB(); 
+        console.log("Connected to MongoDB 🌍");
     } catch (error) { 
         console.error(error.message); 
     }
 }
-
-_approve();
-
 async function startBot() {
-  const { state, saveCreds } = await useMultiFileAuthState(
-			__dirname, 'auth_info_baileys',
-		);
-    const conn = makeWASocket({
+await _approve();
+const { state, saveCreds } = await useMultiFileAuthState(path.join(__dirname, 'auth_info_baileys'));       
+const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
         browser: Browsers.macOS('Chrome'),
