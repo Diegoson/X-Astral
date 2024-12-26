@@ -17,8 +17,6 @@ async function getMongoDB(CONFIG) {
 		});
 		console.log('Connected to MongoDB 👍');
 		const config = await Asena.findOne();
-		if (!config) {
-		console.log('Please set up_configurations');
 		}} catch (error) {
 		console.error(error.message);
 		process.exit(1);
