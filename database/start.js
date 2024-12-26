@@ -15,12 +15,11 @@ async function getMongoDB(CONFIG) {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		});
-		console.log('Connected to MongoDB 👍');
-		const config = await Asena.findOne();
-		} catch (error) {
+		console.log('Connected to MongoDB 🌍');
+	        } catch (error) {
 		console.error(error.message);
 		process.exit(1);
 	}
 }
 
-module.exports = { Asena, getMongoDB };
+module.exports = { getMongoDB };
