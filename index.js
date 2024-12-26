@@ -28,7 +28,7 @@ const store = makeInMemoryStore({
 
 async function connecto() {
     const cxl = path.join(__dirname, 'auth_info_baileys', 'creds.json');
-    const fetchit = CONFIG.app.session_name || "";.
+    const fetchit = CONFIG.app.session_name || "";
     if (fetchit.length > 30) {
         const remsession = fetchit.startsWith("Naxor~") 
             ? Buffer.from(fetchit.replace("Naxor~", ""), 'base64').toString('utf-8') 
