@@ -1,25 +1,21 @@
 const CONFIG = require('../config');
 const mongoose = require('mongoose');
-const AstralScheme = new mongoose.Schema({
-botname: {type: String,default: 'XAstral',},
-version: {type: String,default: '4.0.0',},
-created: {type: Date,default: Date.now,},
-});
-const Asena = mongoose.model('Asena', AstralScheme);
-async function getMongoDB(CONFIG) {
-    try {
+
+async function getMongoDB() {
     const mongo_url = CONFIG.app.mongodb;
-		if (!mongo_url) {
-		console.log('Mongo_string(url) is required');}
-		await mongoose.connect(mongo_url, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-		});
-		console.log('Connected to MongoDB 🌍');
-	        } catch (error) {
-		console.error(error.message);
-		process.exit(1);
-	}
+    if (!mongo_url) {
+        console.log('MongoDB connection string (URL) is required');
+        return;}
+    mongoose
+        .connect(mongo_url, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        })
+        .then(() => console.log('Connected to MongoDB 🌍'))
+        .catch((error) => {
+            console.error(`${error.message}`);
+            process.exit(1); 
+        });
 }
 
 module.exports = { getMongoDB };
