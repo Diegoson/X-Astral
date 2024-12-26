@@ -17,7 +17,7 @@ async function getMongoDB(CONFIG) {
 		});
 		console.log('Connected to MongoDB 👍');
 		const config = await Asena.findOne();
-		}} catch (error) {
+		} catch (error) {
 		console.error(error.message);
 		process.exit(1);
 	}
