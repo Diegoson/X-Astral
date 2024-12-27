@@ -27,8 +27,17 @@ const store = makeInMemoryStore({
 });
 
 async function connecto() {
-    const cxl = path.join(__dirname, 'auth_info_baileys', 'creds.json');
-    const fetchit = CONFIG.app.session_name || "";
+    const credsDir = path.join(__dirname, 'auth_info_baileys'); 
+    const cxl = path.join(credsDir, 'creds.json'); 
+    try {
+        if (!fs.existsSync(credsDir)) {
+            fs.mkdirSync(credsDir, { recursive: true });
+            console.log(credsDir);
+        } else {}
+    } catch (err) {
+        console.error(err.message);
+        return;
+    }  const fetchit = CONFIG.app.session_name || "";
     if (fetchit.length > 30) {
         const remsession = fetchit.startsWith("Naxor~") 
             ? Buffer.from(fetchit.replace("Naxor~", ""), 'base64').toString('utf-8') 
@@ -37,7 +46,9 @@ async function connecto() {
             ? remsession 
             : await new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L').getPaste(remsession);
         fs.writeFileSync(cxl, content, 'utf8');
-    }} if (!CONFIG?.app?.mongodb) {
+        console.log('Credentials saved to:', cxl);
+    }
+}    if (!CONFIG?.app?.mongodb) {
     console.log('_MongoDB URL is missing_');
     return;
 } mongoose.connection.on('connected', () => {
