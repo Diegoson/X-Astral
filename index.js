@@ -29,19 +29,15 @@ const store = makeInMemoryStore({
 async function connecto() {
     const credsDir = path.join(__dirname, 'auth_info_baileys');
     const cxl = path.join(credsDir, 'creds.json');
-    
-    
-    try {
+      try {
         if (!fs.existsSync(credsDir)) {
             fs.mkdirSync(credsDir, { recursive: true });
-            console.log('Directory created:', credsDir);
+            console.log(credsDir);
         }
     } catch (err) {
-        console.error('Error creating directory:', err.message);
-        return;
-    }
-
-    const fetchit = CONFIG.app.session_name || "";
+        console.error(err.message);
+        return;}
+    const fetchit = process.env.SESSION_NAME;
     if (fetchit.length > 30) {
         const remsession = fetchit.startsWith("Naxor~") 
             ? Buffer.from(fetchit.replace("Naxor~", ""), 'base64').toString('utf-8') 
@@ -49,30 +45,22 @@ async function connecto() {
         const content = fetchit.startsWith("Naxor~") 
             ? remsession 
             : await new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L').getPaste(remsession);
-        
         fs.writeFileSync(cxl, content, 'utf8');
         console.log('Credentials saved to:', cxl);
     }
-}
-
-if (!CONFIG?.app?.mongodb) {
+} if (!CONFIG?.app?.mongodb) {
     console.log('_MongoDB URL is missing_');
     return;
-}
-
-mongoose.connection.on('connected', () => {
-    console.log('Mongoose connected to DB');
+} mongoose.connection.on('connected', () => {
+    console.log('Done');
 });
 mongoose.connection.on('error', (err) => {
-    console.error(err.message);
-});
-
+    console.error(err.message);});
 mongoose.connect(CONFIG.app.mongodb, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to mongodb 🌍'))
     .catch((error) => {
         console.error(error.message);
     });
-
 async function _approve() {
     const sessionExists = fs.existsSync(path.join(__dirname, 'auth_info_baileys', 'creds.json'));
     if (!sessionExists) {
@@ -80,11 +68,10 @@ async function _approve() {
         await connecto();
     } 
 }
-
 async function startBot() {
-    const credsFilePath = path.join(__dirname, 'auth_info_baileys', 'creds.json'); 
+    const cre_cxl = path.join(__dirname, 'auth_info_baileys', 'creds.json'); 
     await _approve();
-    const { state, saveCreds } = await useMultiFileAuthState(credsFilePath);
+    const { state, saveCreds } = await useMultiFileAuthState(cre_cxl);
     const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
