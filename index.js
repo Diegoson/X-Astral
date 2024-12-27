@@ -1,4 +1,4 @@
-onst {
+const {
     default: makeWASocket,
     fetchLatestBaileysVersion,
     DisconnectReason,
