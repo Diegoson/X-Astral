@@ -1,5 +1,5 @@
-
 const { CreatePlug } = require('../lib/commands');
+const translate = require('@vitalets/google-translate-api'); 
 
 CreatePlug({
     command: 'whois',
@@ -35,4 +35,17 @@ CreatePlug({
         } else {}
     }
 });
-                                                
+
+CreatePlug({
+    command: 'tr',
+    category: 'mics',
+    desc: 'Translate',
+    execute: async (message, conn, match) => {
+        if (!match) return;
+        const [lang, ...text] = match.split(' ');
+        if (!lang || text.length === 0) return message.reply('!tr [language_] [text]');
+        const result = await translate(text.join(' '), { to: lang }).catch(() => null);
+        if (!result) return message.reply('_err_');
+        message.reply(`${result.text}`);
+    }
+});
