@@ -14,7 +14,7 @@ CreatePlug({
         await conn.send(message.user, { image: { url: _image, caption: `@${name}\nStatus: ${status || 'astral'}\nLast Updated: ${setAt ? new Date(setAt).toLocaleString() : 'unknown'}`, mentions: [user]
    
         }
-               }
+               });
        }
 });
                         
