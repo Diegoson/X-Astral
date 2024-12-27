@@ -52,8 +52,7 @@ async function _approve() {
         console.error(error);
 }
 async function startBot() {
-await _approve();
-const { state, saveCreds } = await useMultiFileAuthState(path.join(__dirname, 'auth_info_baileys'));       
+const { state, saveCreds } = await useMultiFileAuthState(_approve);       
 const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
