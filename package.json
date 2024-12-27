@@ -10,6 +10,8 @@
     "@hapi/boom": "^9.1.2",
     "@whiskeysockets/baileys": "6.7.9", 
     "axios": "^0.21.1",
+    "@vitalets/google-translate-api": "*",
+    "gtts": "*",
     "chalk": "^4.1.0",
     "cheerio": "^1.0.0",
     "child_process": "^1.0.2",
