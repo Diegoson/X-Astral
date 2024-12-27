@@ -44,13 +44,13 @@ async function _approve() {
         await connecto();
     } 
 } if (!CONFIG?.app?.mongodb) console.log('_MongoDB URL is missing_');
- mongoose.connection.on('connected', () => console.log('Connected to mongodb 🌍'));
+ mongoose.connection.on('connected');
     mongoose.connection.on('error', (err) => console.error(err)); 
- try {
-        await mongoose.connect(CONFIG.app.mongodb, { useNewUrlParser: true, useUnifiedTopology: true });
-    } catch (error) {
+ mongoose.connect(CONFIG.app.mongodb, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Connected to mongodb 🌍'))
+    .catch((error) => {
         console.error(error);
-}
+  });
 async function startBot() {
 const { state, saveCreds } = await useMultiFileAuthState(_approve);       
 const conn = makeWASocket({
