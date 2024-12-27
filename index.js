@@ -37,24 +37,28 @@ async function connecto() {
             ? remsession 
             : await new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L').getPaste(remsession);
         fs.writeFileSync(cxl, content, 'utf8');
-    }}
+    }} if (!CONFIG?.app?.mongodb) {
+    console.log('_MongoDB URL is missing_');
+    return;
+} mongoose.connection.on('connected', () => {
+    console.log('Mongoose connected to DB');});
+mongoose.connection.on('error', (err) => {
+    console.error(err.message);});
+mongoose.connect(CONFIG.app.mongodb, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Connected to mongodb 🌍'))
+    .catch((error) => {
+        console.error(error.message);
+    });
 async function _approve() {
     const sessionExists = fs.existsSync(path.join(__dirname, 'auth_info_baileys', 'creds.json'));
     if (!sessionExists) {
         console.log("Session not found. Setting up...");
         await connecto();
     } 
-} if (!CONFIG?.app?.mongodb) console.log('_MongoDB URL is missing_');
- mongoose.connection.on('connected');
-    mongoose.connection.on('error', (err) => console.error(err)); 
- mongoose.connect(CONFIG.app.mongodb, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Connected to mongodb 🌍'))
-    .catch((error) => {
-        console.error(error);
-  });
+}                        
 async function startBot() {
-const { state, saveCreds } = await useMultiFileAuthState(_approve);       
-const conn = makeWASocket({
+ const { state, saveCreds } = await useMultiFileAuthState(_approve());  
+    const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
         browser: Browsers.macOS('Chrome'),
