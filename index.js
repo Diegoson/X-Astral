@@ -9,6 +9,7 @@ const {
 } = require("@whiskeysockets/baileys");
 const { serialize } = require("./lib/messages");
 const { eval: evaluate } = require("./lib/eval");
+const mongoose = require('mongoose');
 const Plugin = require('./database/plugins');
 const { settingz } = require('./database/group');
 const { getPlugins } = require("./database/getPlugins");
