@@ -18,7 +18,6 @@ const { maxUP, detectACTION } = require('./database/autolv');
 const pino = require("pino");
 const path = require('path');
 const fs = require('fs');
-const { getMongoDB } = require('./database/start');
 const { makeInMemoryStore } = require("@whiskeysockets/baileys");
 const { commands } = require("./lib/commands");
 const { exec } = require('child_process');
@@ -43,12 +42,14 @@ async function _approve() {
     if (!sessionExists) {
         console.log("Session not found. Setting up...");
         await connecto();
-    }try { 
-        await getMongoDB(); 
-        console.log("Connected to MongoDB 🌍");
-    } catch (error) { 
-        console.error(error.message); 
-    }
+    } 
+} if (!CONFIG?.app?.mongodb) console.log('_MongoDB URL is missing_');
+ mongoose.connection.on('connected', () => console.log('Connected to mongodb 🌍'));
+    mongoose.connection.on('error', (err) => console.error(err)); 
+ try {
+        await mongoose.connect(CONFIG.app.mongodb, { useNewUrlParser: true, useUnifiedTopology: true });
+    } catch (error) {
+        console.error(error);
 }
 async function startBot() {
 await _approve();
