@@ -26,9 +26,12 @@ const store = makeInMemoryStore({
     logger: pino().child({ level: "silent", stream: "store" }),
 });
 
+ 
+console.log(sessionExists)
+
 async function connecto() {
-    const credsDir = path.join(__dirname, 'auth_info_baileys');
-    const cxl = path.join(credsDir, 'creds.json');
+    const credsDir = path.join(__dirname, './lib', '/auth_info_baileys/creds.json');
+    const cxl = path.join(__dirname, './lib', '/auth_info_baileys/creds.json');
       try {
         if (!fs.existsSync(credsDir)) {
             fs.mkdirSync(credsDir, { recursive: true });
@@ -62,14 +65,14 @@ mongoose.connect(CONFIG.app.mongodb, { useNewUrlParser: true, useUnifiedTopology
         console.error(error.message);
     });
 async function _approve() {
-    const sessionExists = fs.existsSync(path.join(__dirname, 'auth_info_baileys', 'creds.json'));
+    const sessionExists = fs.existsSync(path.join(__dirname, './lib', '/auth_info_baileys/creds.json'));
     if (!sessionExists) {
         console.log("Session not found. Setting up...");
         await connecto();
     } 
 }
 async function startBot() {
-    const cre_cxl = path.join(__dirname, 'auth_info_baileys', 'creds.json'); 
+    const cre_cxl = path.join(__dirname, './lib', '/auth_info_baileys/creds.json');
     await _approve();
     const { state, saveCreds } = await useMultiFileAuthState(cre_cxl);
     const conn = makeWASocket({
