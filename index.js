@@ -27,7 +27,7 @@ const store = makeInMemoryStore({
 });
 
  
-console.log(sessionExists)
+ 
 
 async function connecto() {
     const credsDir = path.join(__dirname, './lib', '/auth_info_baileys/creds.json');
