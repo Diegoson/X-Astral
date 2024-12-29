@@ -103,6 +103,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
             if (!body) return;
             const cmd_txt = body.trim().toLowerCase();
             const match = body.trim().split(/ +/).slice(1).join(" ");
+            const iscmd = cmd_txt.startsWith(CONFIG.app.prefix.toLowerCase());
              const owner = 
             decodeJid(conn.user.id) === sender || CONFIG.app.mods.includes(sender.split("@")[0]);
             console.log(
@@ -114,7 +115,8 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
             return;
         } if (cmd_txt.startsWith(CONFIG.app.prefix.toLowerCase())) {
              const args = cmd_txt.slice(CONFIG.app.prefix.length).trim().split(" ")[0];
-              const command = commands.find((c) => c.command.toLowerCase() === args);
+             const command = commands.find((c) => c.command.toLowerCase() === args);
+             if (iscmd) {
              if (command) {
                 try { if ( (CONFIG.app.mode === "private" && owner) || 
                         CONFIG.app.mode === "public" ) {
