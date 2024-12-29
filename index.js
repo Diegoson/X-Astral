@@ -86,12 +86,6 @@ async function startBot() {
         },
     });
 
-    function log(level, message) {
-        if (CONFIG.logging.level === "info" && level === "info") {
-            console.log(chalk.blueBright(`[INFO] ${message}`));
-        }
-    }
- 
 conn.ev.on("messages.upsert", async ({ messages, type }) => {
     if (type !== "notify") return;
         try { const messageObject = messages?.[0];
@@ -110,8 +104,10 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
             const owner = CONFIG.app.mods.includes(sender.split("@")[0]);
             const cmd_txt = body.trim().toLowerCase();
             const match = body.trim().split(/ +/).slice(1).join(" ");
-            log("info", `[USER]: ${sender}\n[CHAT]: ${isGroup ? "GROUP" : "PRIVATE"}\n[MESSAGE]: ${cmd_txt}`);
-            if (cmd_txt.startsWith(CONFIG.app.prefix.toLowerCase())) {
+            console.log( "------------------\n" +
+  `user: ${sender}\nchat: ${isGroup ? "group" : "private"}\nmessage: ${cmd_txt}\n` +
+  "------------------" );
+             if (cmd_txt.startsWith(CONFIG.app.prefix.toLowerCase())) {
                 const args = cmd_txt.slice(CONFIG.app.prefix.length).trim().split(" ")[0];
                 const command = commands.find((c) => c.command.toLowerCase() === args);
                 if (command) {
@@ -130,9 +126,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
                         }
                     } catch (error) {}
                 } else {}
-            }} catch (error) {
-            log("error", `${error.message}`);
-        }
+            }} catch (error) {}
     });
 
 conn.ev.on("creds.update", saveCreds);
