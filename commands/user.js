@@ -108,3 +108,14 @@ CreatePlug({
     }
 });
 
+CreatePlug({
+    command: 'leave',
+    category: 'admin',
+    desc: 'gc_leave',
+    execute: async (message, conn, match) => {
+        const isAdmin = conn.user.id;
+        if (!isAdmin) return;
+        await conn.groupLeave(message.user);
+    }
+});
+                    
