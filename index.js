@@ -114,9 +114,9 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
           if (CONFIG.app.mode === "private" && isCommand && !owner) {
             return;
         } if (cmd_txt.startsWith(CONFIG.app.prefix.toLowerCase())) {
+             if (iscmd) {
              const args = cmd_txt.slice(CONFIG.app.prefix.length).trim().split(" ")[0];
              const command = commands.find((c) => c.command.toLowerCase() === args);
-             if (iscmd) {
              if (command) {
                 try { if ( (CONFIG.app.mode === "private" && owner) || 
                         CONFIG.app.mode === "public" ) {
