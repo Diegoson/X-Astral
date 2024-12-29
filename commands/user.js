@@ -93,4 +93,18 @@ CreatePlug({
     }
 });
 
-        
+CreatePlug({
+    command: 'getgc',
+    category: 'admin',
+    desc: 'groups',
+    execute: async (message, conn, match, owner) => {
+        if(!owner) return;
+        const groups = await getChats(conn);
+        const mime = await Promise.all(groups.map(async (group, index) => {
+            const nama = await conn.groupMetadata(group.id);
+            const nema = nama.subject;
+            return `${index + 1}. ${nema}\n   *Jid:* ${group.id}\n   *Id:* ${group.id}`;
+        })); await conn.send(message.user, { text: `*Groups:*\n${mime.join('\n\n')}`);
+    }
+});
+
