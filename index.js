@@ -110,6 +110,9 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
             `user: ${sender}\nchat: ${isGroup ? "group" : "private"}\nmessage: ${cmd_txt}\n` +
             "------------------"
         );
+          if (CONFIG.app.mode === "private" && isCommand && !owner) {
+            return;
+        }
           if (cmd_txt.startsWith(CONFIG.app.prefix.toLowerCase())) {
                 const args = cmd_txt.slice(CONFIG.app.prefix.length).trim().split(" ")[0];
                 const command = commands.find((c) => c.command.toLowerCase() === args);
