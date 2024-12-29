@@ -112,28 +112,18 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
         );
           if (CONFIG.app.mode === "private" && isCommand && !owner) {
             return;
+        } if (cmd_txt.startsWith(CONFIG.app.prefix.toLowerCase())) {
+             const args = cmd_txt.slice(CONFIG.app.prefix.length).trim().split(" ")[0];
+              const command = commands.find((c) => c.command.toLowerCase() === args);
+             if (command) {
+                try { if ( (CONFIG.app.mode === "private" && owner) || 
+                        CONFIG.app.mode === "public" ) {
+                        await command.execute(message, conn, match, owner);
+                    }} catch (error) {}
+            }
         }
-          if (cmd_txt.startsWith(CONFIG.app.prefix.toLowerCase())) {
-                const args = cmd_txt.slice(CONFIG.app.prefix.length).trim().split(" ")[0];
-                const command = commands.find((c) => c.command.toLowerCase() === args);
-                if (command) {
-                    try {
-                        if ((CONFIG.app.mode === "private" &&
-                                (message.isFromMe ||
-                                    CONFIG.app.mods.includes(sender.split("@")[0]) ||
-                                    sender.includes(message.user.split("@")[0]))) ||
-                            (CONFIG.app.mode === "public" &&
-                                !isGroup &&
-                                (message.isFromMe ||
-                                    CONFIG.app.mods.includes(sender.split("@")[0]) ||
-                                    sender.includes(message.user.split("@")[0])))
-                        ) {
-                            await command.execute(message, conn, match, owner);
-                        }
-                    } catch (error) {}
-                } else {}
-            }} catch (error) {}
-    });
+    } catch (error) {}
+});   
 
 conn.ev.on("creds.update", saveCreds);
 conn.ev.on("group-participants.update", async ({ update,id, participants, action }) => {
