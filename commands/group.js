@@ -39,36 +39,6 @@ CreatePlug({
         }
     }
 });
-    
-CreatePlug({
-    command: 'kick',
-    category: 'group',
-    desc: 'Remove a user from the group',
-    execute: async (message, conn) => {
-        if (!message.isGroup) return;
-        if (!message.isBotAdmin) return message.reply('Um not admin');
-        const participants = await message.groupParticipants;
-        const members = message.mentions;
-        if (message.text === 'all') {
-            const nonAdmins = participants.filter(participant => !participant.admin || participant.admin !== 'admin').map(participant => participant.id);
-            if (nonAdmins.length === 0) return message.reply('_remove_');
-            await message.reply('_Kicking all non-admins.._');
-            for (const user of nonAdmins) {
-                await conn.groupParticipantsUpdate(message.user, [user], 'remove')
-                    .then(() => message.reply(`Removed: ${user}`))
-                    .catch(err => message.reply(`${user}`));
-            }
-        } else if (members.length > 0) {
-            for (const user of members) {
-                await conn.groupParticipantsUpdate(message.user, [user], 'remove')
-                    .then(() => message.reply(`removed: ${user}.`))
-                    .catch(err => message.reply(`${user}.`));
-            }
-        } else {
-            return message.reply('mention_user(s)/type_"all"');
-        }
-    }
-});
                         
 CreatePlug({
     command: 'mute',
@@ -200,3 +170,22 @@ CreatePlug({
         return;
     }
 });
+
+CreatePlug({
+    command: 'kick',
+    category: 'group',
+    desc: 'romver',
+    execute: async (message, conn, match) => {
+        const isAdmin = message.isAdmin;
+        if (!isAdmin) return;
+        var isBotAdmin = message.isBotAdmin;
+        if(!isBotAdmin) return message.reply('*_um not an adimn_');
+        const ass_member = message.mentions;
+        if (ass_member.length === 0) {
+            return await message.reply('_really nigga_');
+        } for (const participant of ass_member) {
+        await conn.groupParticipants(message.user, [participant.id], 'remove');}
+        await message.reply(`*_done_*`);
+    }
+});
+            
