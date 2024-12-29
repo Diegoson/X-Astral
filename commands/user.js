@@ -1,6 +1,8 @@
 const { CreatePlug } = require('../lib/commands');
 const translate = require('@vitalets/google-translate-api'); 
 const gTTS = require('gtts');
+const CONFIG = require('../config');
+
 
 CreatePlug({
     command: 'whois',
@@ -65,4 +67,30 @@ CreatePlug({
          });
     }
 });
-    
+
+const getChats = async (conn) => {
+    const chats = await conn.chats.all();
+    return { groups: chats.filter(chat => chat.id.endsWith('@g.us')), users: chats.filter(chat => !chat.id.endsWith('@g.us')) };
+};
+
+CreatePlug({
+    command: 'broadcast',
+    category: 'admin',
+    desc: '_Broadcast msgs_',
+    execute: async (message, conn, match, owner) => {
+        if (!owner) return; 
+        if (!match) return await message.reply('_msg required_');
+        const { groups, users } = await getChats(conn);
+        if (!groups.length && !users.length) return;
+        const _msg = `----🗣️ *Broadcast Message* 🗣️----\n*Author:* *${CONFIG.app.botname}*\n\n${match}`.trim();
+        const _img = 'https://i.imgur.com/Lu1doPs.jpeg';
+        for (const group of groups) {
+            const gc_name = (await conn.groupMetadata(group.id)).subject || '_';
+            await conn.send(group.id, { image: { url: _img }, caption: `${_msg}` });
+        }  for (const user of users) {
+            await conn.send(user.id, { image: { url: _img }, caption: `${_msg}` });}
+        await message.reply('*_success_*');
+    }
+});
+
+        
