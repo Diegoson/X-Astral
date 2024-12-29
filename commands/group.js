@@ -188,4 +188,16 @@ CreatePlug({
         await message.reply(`*_done_*`);
     }
 });
-            
+
+CreatePlug({
+    command: 'invite',
+    category: 'group',
+    desc: 'group_invites',
+    execute: async (message, conn, match) => {
+        const isAdmin = message.isAdmin;
+        if (!isAdmin) return;
+        var _invites  = await conn.groupInviteCode(message.user);
+        await message.reply(`*Group Link*:\nhttps://chat.whatsapp.com/${_invites}`);
+    }
+});
+        
