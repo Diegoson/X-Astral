@@ -26,8 +26,6 @@ const store = makeInMemoryStore({
     logger: pino().child({ level: "silent", stream: "store" }),
 });
 
- 
- 
 
 async function connecto() {
     const credsDir = path.join(__dirname, './lib', '/auth_info_baileys/creds.json');
@@ -165,6 +163,25 @@ conn.ev.on("connection.update", async (update) => {
            console.log(('Plugins in database:'), all_Plugs);
       }
   })
-    };
+  const mode = CONFIG.app.mode;
+ const mods = CONFIG.app.mods; 
+ const prefix = CONFIG.app.prefix;
+ const mongodb_url = CONFIG.app.mongodb;
+  const bot = CONFIG.botname;
+  const _msg_ = [
+    `*Im Online Now*`,
+    `Mode      : ${mode && mode.toLowerCase() === 'private' ? 'Private' : 'Public'}`,
+    `Prefix    : ${prefix}`,
+    `Mongodb   : ${mongodb_url && mongodb_url.trim() ? '✔️ Connected' : '❌ Not Connected'}`,
+    `Botname   : ${bot}`,
+].join('\n');
+const recipients = [conn.user.id, ...mods];
+for (const recipient of recipients) {
+    await conn.sendMessage(recipient, {
+        text: '```' + _msg_ + '```',
+     });
+        }
+        
+};
                
 startBot();
