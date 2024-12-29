@@ -101,9 +101,10 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
              await maxUP(message, conn);
             const { sender, isGroup, body } = message;
             if (!body) return;
-            const owner = CONFIG.app.mods.includes(sender.split("@")[0]);
             const cmd_txt = body.trim().toLowerCase();
             const match = body.trim().split(/ +/).slice(1).join(" ");
+             const owner = 
+            decodeJid(conn.user.id) === sender || CONFIG.app.mods.includes(sender.split("@")[0]);
             console.log(
             "------------------\n" +
             `user: ${sender}\nchat: ${isGroup ? "group" : "private"}\nmessage: ${cmd_txt}\n` +
