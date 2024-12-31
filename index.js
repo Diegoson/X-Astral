@@ -55,7 +55,7 @@ mongoose.connect(CONFIG.app.mongodb, { useNewUrlParser: true, useUnifiedTopology
         auth: {
             creds: state.creds,
             keys: makeCacheableSignalKeyStore(state.keys, store),
-        )};
+        });
 
 conn.ev.on("messages.upsert", async ({ messages, type }) => {
     if (type !== "notify") return;
