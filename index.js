@@ -1,17 +1,3 @@
-fix this error for me please 
-
-root/Diegoson/index.js:58
-2024-12-31T16:48:44.518506+00:00 app[worker.1]: 0|xastral  |         });
-2024-12-31T16:48:44.518515+00:00 app[worker.1]: 0|xastral  |          ^
-2024-12-31T16:48:44.518607+00:00 app[worker.1]: 0|xastral  | SyntaxError: Unexpected token ')'
-2024-12-31T16:48:44.518619+00:00 app[worker.1]: 0|xastral  |     at Object.compileFunction (node:vm:360:18)
-2024-12-31T16:48:44.518639+00:00 app[worker.1]: 0|xastral  |     at wrapSafe (node:internal/modules/cjs/loader:1055:15)
-2024-12-31T16:48:44.518658+00:00 app[worker.1]: 0|xastral  |     at Module._compile (node:internal/modules/cjs/loader:1090:27)
-2024-12-31T16:48:44.518673+00:00 app[worker.1]: 0|xastral  |     at Object.Module._extensions..js (node:internal/modules/cjs/loader:1180:10)
-2024-12-31T16:48:44.518695+00:00 app[worker.1]: 0|xastral  |     at Module.load (node:internal/modules/cjs/loader:1004:32)
-2024-12-31T16:48:44.518700+00:00 app[worker.1]: 0|xastral  |     at Function.Module._load (node:internal/modules/cjs/loader:839:12)
-
-
 const {
     default: makeWASocket,
     fetchLatestBaileysVersion,
