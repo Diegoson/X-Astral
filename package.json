@@ -16,6 +16,7 @@
     "cheerio": "^1.0.0",
     "child_process": "^1.0.2",
     "dotenv": "^16.4.7",
+    "crypto": "*",
     "fs-extra": "^10.0.0",
     "mongoose": "^6.13.5",
     "jimp": "^0.16.13",
