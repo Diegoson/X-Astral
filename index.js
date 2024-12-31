@@ -7,7 +7,7 @@ const {
     Browsers,
     delay,
 } = require("@whiskeysockets/baileys");
-const { serialize } = require("./lib/messages");
+const { serialize, decodeJid } = require("./lib/messages");
 const { eval: evaluate } = require("./lib/eval");
 const mongoose = require('mongoose');
 const Plugin = require('./database/plugins');
@@ -95,7 +95,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
                     }} catch (error) {}
             }
         }
-    } catch (error) {}
+    } 
 });   
 
 conn.ev.on("creds.update", saveCreds);
