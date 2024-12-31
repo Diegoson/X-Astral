@@ -28,7 +28,7 @@ const store = makeInMemoryStore({
 });
 
    async function startBot() {
-    await saveCreds();
+   // await saveCreds();
     await upload();
     const { state, saveCreds } = await useMultiFileAuthState(
         "./lib/session",
