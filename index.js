@@ -28,6 +28,7 @@ const store = makeInMemoryStore({
 });
 
 async function startBot() {
+    await saveCreds();
     await upload();
     const { state, saveCreds } = await useMultiFileAuthState(
     "./lib/session",
@@ -92,7 +93,7 @@ conn.ev.on("messages.upsert", async ({ messages, type }) => {
                 try { if ( (CONFIG.app.mode === "private" && owner) || 
                         CONFIG.app.mode === "public" ) {
                         await command.execute(message, conn, match, owner);
-                    }} catch (error) {}
+                    }} 
             }
         }
     } 
