@@ -22,34 +22,18 @@ const fs = require('fs');
 const { makeInMemoryStore } = require("@whiskeysockets/baileys");
 const { commands } = require("./lib/commands");
 const { exec } = require('child_process');
+const { saveCreds, upload } = require('./lib/session');
 const store = makeInMemoryStore({
     logger: pino().child({ level: "silent", stream: "store" }),
 });
 
-
-async function connecto() {
-    const credsDir = path.join(__dirname, './lib', '/auth_info_baileys/creds.json');
-    const cxl = path.join(__dirname, './lib', '/auth_info_baileys/creds.json');
-      try {
-        if (!fs.existsSync(credsDir)) {
-            fs.mkdirSync(credsDir, { recursive: true });
-            console.log(credsDir);
-        }
-    } catch (err) {
-        console.error(err.message);
-        return;}
-    const fetchit = process.env.SESSION_NAME;
-    if (fetchit.length > 30) {
-        const remsession = fetchit.startsWith("Naxor~") 
-            ? Buffer.from(fetchit.replace("Naxor~", ""), 'base64').toString('utf-8') 
-            : Buffer.from(fetchit.slice(10), 'base64').toString('utf-8');
-        const content = fetchit.startsWith("Naxor~") 
-            ? remsession 
-            : await new (require('pastebin-js'))('5f4ilKJVJG-0xbJTXesajw64LgSAAo-L').getPaste(remsession);
-        fs.writeFileSync(cxl, content, 'utf8');
-        console.log('Credentials saved to:', cxl);
-    }
-} if (!CONFIG?.app?.mongodb) {
+async function startBot() {
+    await upload();
+    const { state, saveCreds } = await useMultiFileAuthState(
+    "./lib/session",
+    pino({ level: "silent" })
+  );
+    if (!CONFIG?.app?.mongodb) {
     console.log('_MongoDB URL is missing_');
     return;
 } mongoose.connection.on('connected', () => {
@@ -62,17 +46,6 @@ mongoose.connect(CONFIG.app.mongodb, { useNewUrlParser: true, useUnifiedTopology
     .catch((error) => {
         console.error(error.message);
     });
-async function _approve() {
-    const sessionExists = fs.existsSync(path.join(__dirname, './lib', '/auth_info_baileys/creds.json'));
-    if (!sessionExists) {
-        console.log("Session not found. Setting up...");
-        await connecto();
-    } 
-}
-async function startBot() {
-    const cre_cxl = path.join(__dirname, './lib', '/auth_info_baileys/creds.json');
-    await _approve();
-    const { state, saveCreds } = await useMultiFileAuthState(cre_cxl);
     const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
