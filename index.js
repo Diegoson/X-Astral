@@ -18,29 +18,32 @@ const { maxUP, detectACTION } = require("./database/autolv");
 const { serialize, decodeJid } = require("./lib/messages");
 const { commands } = require("./lib/commands");
 const CONFIG = require("./config");
+const CryptoJS = require('crypto-js');
 
-const ENCRYPTION_KEY = crypto.randomBytes(32); // Securely manage this key
-const IV = crypto.randomBytes(16);
-const SESSION_DIR = "./lib/session/";
-
-async function encryptSession(filePath) {
-    if (!fs.existsSync(filePath)) throw new Error("File does not exist");
-    const content = fs.readFileSync(filePath, "utf8");
-    const cipher = crypto.createCipheriv("aes-256-cbc", ENCRYPTION_KEY, IV);
-    let encrypted = cipher.update(content, "utf8", "hex");
-    encrypted += cipher.final("hex");
-    return `Naxor~${encrypted}`;
-}
-
-async function decryptSession(encryptedData, outputPath) {
-    if (!encryptedData.startsWith("Naxor~")) throw new Error('Session data must start with "Naxor~"');
-    const data = encryptedData.replace("Naxor~", "");
-    const decipher = crypto.createDecipheriv("aes-256-cbc", ENCRYPTION_KEY, IV);
-    let decrypted = decipher.update(data, "hex", "utf8");
-    decrypted += decipher.final("utf8");
-    if (!fs.existsSync(outputPath)) fs.mkdirSync(outputPath, { recursive: true });
-    fs.writeFileSync(path.join(outputPath, "creds.json"), decrypted);
-}
+(async function() {
+const prefix = "Naxor~"; 
+const output = "../lib/session/"; 
+async function sessionAuth(id) {
+    const filePath = `${output}creds.json`;
+    if (!fs.existsSync(filePath)) {
+        if (!CONFIG.app.session_name.startsWith(prefix)) {
+            console.log("Invalid session ID!");
+            return;
+        } }
+    if (!id.startsWith(prefix)) {
+        throw new Error(`Prefix doesn't match. Expected prefix: "${prefix}"`);
+    }
+    var _ID = CryptoJS.lib.WordArray.random(30).toString(CryptoJS.enc.Base64).substring(0, 30);
+    const _ID = id.replace(prefix, "");
+    if (!fs.existsSync(output)) {
+        fs.mkdirSync(output, { recursive: true });
+    }
+    const creds = {
+        id: _ID,
+        createdAt: new Date().toISOString(),
+        sessionData: `Session for ${randomID}`};
+    fs.writeFileSync(filePath, JSON.stringify(creds, null, 2), 'utf8');
+ }
 
 async function startBot() {
     if (!CONFIG?.app?.mongodb) {
