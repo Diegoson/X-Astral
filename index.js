@@ -1,59 +1,66 @@
 const {
     default: makeWASocket,
     fetchLatestBaileysVersion,
-    DisconnectReason,
     useMultiFileAuthState,
     makeCacheableSignalKeyStore,
     Browsers,
-    delay,
 } = require("@whiskeysockets/baileys");
-const { serialize, decodeJid } = require("./lib/messages");
-const { eval: evaluate } = require("./lib/eval");
-const mongoose = require('mongoose');
-const Plugin = require('./database/plugins');
-const { settingz } = require('./database/group');
-const { getPlugins } = require("./database/getPlugins");
-const CONFIG = require("./config");
-const chalk = require("chalk");
-const { maxUP, detectACTION } = require('./database/autolv');
+const mongoose = require("mongoose");
 const pino = require("pino");
-const path = require('path');
-const fs = require('fs');
-const { makeInMemoryStore } = require("@whiskeysockets/baileys");
+const path = require("path");
+const fs = require("fs");
+const crypto = require("crypto");
+const { eval: evaluate } = require("./lib/eval");
+const Plugin = require("./database/plugins");
+const { settingz } = require("./database/group");
+const { getPlugins } = require("./database/getPlugins");
+const { maxUP, detectACTION } = require("./database/autolv");
+const { serialize, decodeJid } = require("./lib/messages");
 const { commands } = require("./lib/commands");
-const { exec } = require('child_process');
-const { saveCreds, upload } = require('./lib/session');
-const store = makeInMemoryStore({
-    logger: pino().child({ level: "silent", stream: "store" }),
-});
+const CONFIG = require("./config");
 
-   async function startBot() {
-   // await saveCreds();
-    await upload();
-    const { state, saveCreds } = await useMultiFileAuthState(
-        "./lib/session",
-        pino({ level: "silent" })
-    );
+const ENCRYPTION_KEY = crypto.randomBytes(32); // Securely manage this key
+const IV = crypto.randomBytes(16);
+const SESSION_DIR = "./lib/session/";
 
+async function encryptSession(filePath) {
+    if (!fs.existsSync(filePath)) throw new Error("File does not exist");
+    const content = fs.readFileSync(filePath, "utf8");
+    const cipher = crypto.createCipheriv("aes-256-cbc", ENCRYPTION_KEY, IV);
+    let encrypted = cipher.update(content, "utf8", "hex");
+    encrypted += cipher.final("hex");
+    return `Naxor~${encrypted}`;
+}
+
+async function decryptSession(encryptedData, outputPath) {
+    if (!encryptedData.startsWith("Naxor~")) throw new Error('Session data must start with "Naxor~"');
+    const data = encryptedData.replace("Naxor~", "");
+    const decipher = crypto.createDecipheriv("aes-256-cbc", ENCRYPTION_KEY, IV);
+    let decrypted = decipher.update(data, "hex", "utf8");
+    decrypted += decipher.final("utf8");
+    if (!fs.existsSync(outputPath)) fs.mkdirSync(outputPath, { recursive: true });
+    fs.writeFileSync(path.join(outputPath, "creds.json"), decrypted);
+}
+
+async function startBot() {
     if (!CONFIG?.app?.mongodb) {
-        console.log("_MongoDB URL is missing_");
+        console.error("MongoDB URL is missing");
         return;
     }
 
-    mongoose.connection.on("connected", () => {
-        console.log("Done");
-    });
-    mongoose.connection.on("error", (err) => {
-        console.error(err.message);
-    });
-
-    mongoose
-        .connect(CONFIG.app.mongodb, { useNewUrlParser: true, useUnifiedTopology: true })
-        .then(() => console.log("Connected to mongodb 🌍"))
-        .catch((error) => {
-            console.error(error.message);
+    mongoose.connection.on("connected", () => console.log("Connected to MongoDB 🌍"));
+    mongoose.connection.on("error", (err) => console.error("MongoDB Error:", err.message));
+    try {
+        await mongoose.connect(CONFIG.app.mongodb, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
         });
+    } catch (error) {
+        console.error("Failed to connect to MongoDB:", error.message);
+        return;
+    }
 
+    const { state, saveCreds } = await useMultiFileAuthState(SESSION_DIR, pino({ level: "silent" }));
     const conn = makeWASocket({
         version: (await fetchLatestBaileysVersion()).version,
         printQRInTerminal: false,
@@ -61,7 +68,7 @@ const store = makeInMemoryStore({
         logger: pino({ level: "silent" }),
         auth: {
             creds: state.creds,
-            keys: makeCacheableSignalKeyStore(state.keys, store),
+            keys: makeCacheableSignalKeyStore(state.keys),
         },
     });
 
