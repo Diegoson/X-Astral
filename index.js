@@ -20,64 +20,64 @@ const { commands } = require("./lib/commands");
 const CONFIG = require("./config");
 const CryptoJS = require('crypto-js');
 
-(async function() {
-const prefix = "Naxor~"; 
-const output = "../lib/session/"; 
-async function sessionAuth(id) {
-    const filePath = `${output}creds.json`;
-    if (!fs.existsSync(filePath)) {
-        if (!CONFIG.app.session_name.startsWith(prefix)) {
-            console.log("Invalid session ID!");
+(async function () {
+    const prefix = "Naxor~";
+    const output = "./lib/session/";
+
+    async function sessionAuth(id) {
+        const filePath = `${output}creds.json`;
+        if (!fs.existsSync(filePath)) {
+            if (!id.startsWith(prefix)) {
+                console.log("Invalid session ID!");
+                return;
+            }
+        }
+        const randomID = CryptoJS.lib.WordArray.random(30).toString(CryptoJS.enc.Base64).substring(0, 30);
+        const _ID = id.replace(prefix, "");
+        if (!fs.existsSync(output)) {
+            fs.mkdirSync(output, { recursive: true });
+        }
+        const creds = {
+            id: _ID,
+            createdAt: new Date().toISOString(),
+            sessionData: `Session for ${randomID}`,
+        };
+        fs.writeFileSync(filePath, JSON.stringify(creds, null, 2), "utf8");
+    }
+
+    async function startBot() {
+        if (!CONFIG?.app?.mongodb) {
+            console.error("MongoDB URL is missing");
             return;
-        } }
-    if (!id.startsWith(prefix)) {
-        throw new Error(`Prefix doesn't match. Expected prefix: "${prefix}"`);
-    }
-    var _ID = CryptoJS.lib.WordArray.random(30).toString(CryptoJS.enc.Base64).substring(0, 30);
-    const _ID = id.replace(prefix, "");
-    if (!fs.existsSync(output)) {
-        fs.mkdirSync(output, { recursive: true });
-    }
-    const creds = {
-        id: _ID,
-        createdAt: new Date().toISOString(),
-        sessionData: `Session for ${randomID}`};
-    fs.writeFileSync(filePath, JSON.stringify(creds, null, 2), 'utf8');
- }
+        }
 
-async function startBot() {
-    if (!CONFIG?.app?.mongodb) {
-        console.error("MongoDB URL is missing");
-        return;
-    }
+        mongoose.connection.on("connected", () => console.log("Connected to MongoDB 🌍"));
+        mongoose.connection.on("error", (err) => console.error("MongoDB Error:", err.message));
+        try {
+            await mongoose.connect(CONFIG.app.mongodb, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            });
+        } catch (error) {
+            console.error("Failed to connect to MongoDB:", error.message);
+            return;
+        }
 
-    mongoose.connection.on("connected", () => console.log("Connected to MongoDB 🌍"));
-    mongoose.connection.on("error", (err) => console.error("MongoDB Error:", err.message));
-    try {
-        await mongoose.connect(CONFIG.app.mongodb, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+        let { state, saveCreds } = await useMultiFileAuthState(output, pino({ level: "silent" }));
+        const conn = makeWASocket({
+            version: (await fetchLatestBaileysVersion()).version,
+            printQRInTerminal: false,
+            browser: Browsers.macOS("Chrome"),
+            logger: pino({ level: "silent" }),
+            auth: {
+                creds: state.creds,
+                keys: makeCacheableSignalKeyStore(state.keys),
+            },
         });
-    } catch (error) {
-        console.error("Failed to connect to MongoDB:", error.message);
-        return;
-    }
 
-    const { state, saveCreds } = await useMultiFileAuthState(SESSION_DIR, pino({ level: "silent" }));
-    const conn = makeWASocket({
-        version: (await fetchLatestBaileysVersion()).version,
-        printQRInTerminal: false,
-        browser: Browsers.macOS("Chrome"),
-        logger: pino({ level: "silent" }),
-        auth: {
-            creds: state.creds,
-            keys: makeCacheableSignalKeyStore(state.keys),
-        },
-    });
-
-    conn.ev.on("messages.upsert", async ({ messages, type }) => {
+ conn.ev.on("creds.update", saveCreds);
+ conn.ev.on("messages.upsert", async ({ messages, type }) => {
         if (type !== "notify") return;
-
         try {
             const messageObject = messages?.[0];
             if (!messageObject) return;
@@ -135,8 +135,6 @@ async function startBot() {
             console.error("Message Upsert Error:", err.message);
         }
     });
-
-    conn.ev.on("creds.update", saveCreds);
 
     conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
         await detectACTION(id);
@@ -225,5 +223,6 @@ async function startBot() {
 }
 
 
-startBot();
+startBot
+})();
      
