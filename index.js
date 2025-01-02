@@ -21,21 +21,20 @@ const CONFIG = require("./config");
 const CryptoJS = require('crypto-js');
 
 (async function () {
-    const prefix = "Naxor~";
-    const output = "./lib/session/";
-    async function sessionAuth(id) {
-        const filePath = `${output}creds.json`;
-        if (!fs.existsSync(filePath)) {
-            if (!id.startsWith(prefix)) {
-                console.log("Invalid session ID!");
-                return;
-            }
+const prefix = "Naxor~";
+const output = "./lib/session/";
+async function sessionAuth(id) {
+    const filePath = `${output}creds.json`;
+    if (!fs.existsSync(filePath)) {
+        if (!CONFIG.app.session_name.startsWith(prefix)) {
+            console.log("Invalid session ID!");
+            return; 
         }
-        const randomID = CryptoJS.lib.WordArray.random(30).toString(CryptoJS.enc.Base64).substring(0, 30);
-        const _ID = id.replace(prefix, "");
         if (!fs.existsSync(output)) {
             fs.mkdirSync(output, { recursive: true });
         }
+        const randomID = CryptoJS.lib.WordArray.random(30).toString(CryptoJS.enc.Base64).substring(0, 30);
+        const _ID = id.replace(prefix, "");
         const creds = {
             id: _ID,
             createdAt: new Date().toISOString(),
@@ -43,6 +42,7 @@ const CryptoJS = require('crypto-js');
         };
         fs.writeFileSync(filePath, JSON.stringify(creds, null, 2), "utf8");
     }
+}
 
     async function startBot() {
         if (!CONFIG?.app?.mongodb) {
