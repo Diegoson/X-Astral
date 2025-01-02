@@ -28,7 +28,6 @@ async function sessionAuth(id) {
     if (!fs.existsSync(filePath)) {
         if (!CONFIG.app.session_name.startsWith(prefix)) {
             console.log("Invalid session ID!");
-            return; 
         }
         if (!fs.existsSync(output)) {
             fs.mkdirSync(output, { recursive: true });
