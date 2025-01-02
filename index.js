@@ -23,7 +23,6 @@ const CryptoJS = require('crypto-js');
 (async function () {
     const prefix = "Naxor~";
     const output = "./lib/session/";
-
     async function sessionAuth(id) {
         const filePath = `${output}creds.json`;
         if (!fs.existsSync(filePath)) {
@@ -223,6 +222,6 @@ const CryptoJS = require('crypto-js');
 }
 
 
-startBot
+startBot()
 })();
      
