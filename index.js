@@ -12,7 +12,7 @@ const fs = require("fs");
 const crypto = require("crypto");
 const { eval: evaluate } = require("./lib/eval");
 const Plugin = require("./database/plugins");
-const { settingz } = require("./database/group");
+const { groups } = require("./database/group");
 const { getPlugins } = require("./database/getPlugins");
 const { maxUP, detectACTION } = require("./database/autolv");
 const { serialize, decodeJid } = require("./lib/messages");
@@ -135,46 +135,16 @@ async function sessionAuth(id) {
     });
 
     conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
-        await detectACTION(id);
-        const Settings = await settingz(id);
-        const gcName = (await conn.groupMetadata(id)).subject;
-        const timestamp = new Date().toLocaleString();
-
-        for (const participant of participants) {
-            try {
-                const pp = await conn.profilePictureUrl(participant, "image").catch(() => null);
-                const username = `@${participant.split("@")[0]}`;
-                const number = participants.length;
-                let message = "";
-
-                if (action === "add" && Settings.welcome) {
-                    message = Settings.welcome
-                        .replace("@pushname", username)
-                        .replace("@gc_name", gcName)
-                        .replace("@pp", pp || "x_astral")
-                        .replace("@time", timestamp)
-                        .replace("@number", number);
-                } else if (action === "remove" && Settings.goodbye) {
-                    message = Settings.goodbye
-                        .replace("@pushname", username)
-                        .replace("@gc_name", gcName)
-                        .replace("@pp", pp || "x_astral")
-                        .replace("@time", timestamp)
-                        .replace("@number", number);
-                }
-
-                if (message) {
-                    if (pp) {
-                        await conn.sendMessage(id, { image: { url: pp }, caption: message });
-                    } else {
-                        await conn.sendMessage(id, { text: message });
-                    }
-                }
-            } catch (err) {
-                console.error("Group Participants Update Error:", err.message);
-            }
+    await detectACTION(id);
+    var group = await groups(id); 
+    participants.forEach(participant => {
+        if (action === "add") {
+            conn.sendMessage(id, group.welcome.replace('@pushname', participant).replace('@gc_name', id).replace('@number', participant).replace('@time', new Date().toLocaleString()), { quoted: id });
+        } else if (action === "remove") {
+            conn.sendMessage(id, group.goodbye.replace('@pushname', participant).replace('@gc_name', id).replace('@time', new Date().toLocaleString()), { quoted: id });
         }
     });
+});
 
     conn.ev.on("connection.update", async (update) => {
         const { connection } = update;
