@@ -42,7 +42,7 @@ async function sessionAuth(id) {
 }
 
     async function startBot() {
-        await CONFIG.app.DATABASE.sync();
+        await CONFIG.app.sqlite3.sync();
         let { state, saveCreds } = await useMultiFileAuthState(output, pino({ level: "silent" }));
         const conn = makeWASocket({
             version: (await fetchLatestBaileysVersion()).version,
