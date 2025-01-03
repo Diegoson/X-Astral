@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const path = require('path');
+const { Sequelize } = require('sequelize');
 dotenv.config({path: path.resolve(__dirname, `${process.env.NODE_ENV || 'development'}.env`)});
 const toBool = (x) => (x && (x.toLowerCase() === 'true' || x.toLowerCase() === 'on')) || false;
 const DATABASE_URL = process.env.DATABASE_URL === undefined ? "./database.db" : process.env.DATABASE_URL;
