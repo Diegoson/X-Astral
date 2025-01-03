@@ -1,5 +1,5 @@
 const { CreatePlug } = require('../lib/commands');
-const User = require('../database/alive'); 
+const User = require('../database/alive');
 
 CreatePlug({
     command: 'alive',
@@ -7,11 +7,8 @@ CreatePlug({
     desc: 'alive',
     execute: async (message, conn) => {
         await message.react('🗣️');
-        var user = await User.findOne({ id: message.user });
-        if (!user) { user = await User.create({
-        username: message.user,
-        id: message.user,});}
-       const msg = user.generateAliveMessage();
+        const _user = await User.findOne({ where: { id: message.user } });
+        const msg = user ? _user.generateAliveMessage() : '_not active_';   
         await conn.send(message.user, {
             text: msg,
         });
