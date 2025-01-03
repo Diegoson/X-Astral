@@ -43,6 +43,7 @@ async function sessionAuth(id) {
 
     async function startBot() {
         await CONFIG.app.sqlite3.sync();
+        console.log('sync db_connected🍀');
         let { state, saveCreds } = await useMultiFileAuthState(output, pino({ level: "silent" }));
         const conn = makeWASocket({
             version: (await fetchLatestBaileysVersion()).version,
@@ -75,10 +76,8 @@ async function sessionAuth(id) {
                 return;
 
             await maxUP(message, conn);
-            const { sender, isGroup, body } = message;
-
+            const { sender, isGroup, body } = message
             if (!body) return;
-
             const cmd_txt = body.trim().toLowerCase();
             const match = body.trim().split(/ +/).slice(1).join(" ");
             const iscmd = cmd_txt.startsWith(CONFIG.app.prefix.toLowerCase());
@@ -94,7 +93,6 @@ async function sessionAuth(id) {
             if (CONFIG.app.mode === "private" && iscmd && !owner) {
                 return;
             }
-
             if (cmd_txt.startsWith(CONFIG.app.prefix.toLowerCase()) && iscmd) {
                 const args = cmd_txt.slice(CONFIG.app.prefix.length).trim().split(" ")[0];
                 const command = commands.find((c) => c.command.toLowerCase() === args);
@@ -112,8 +110,7 @@ async function sessionAuth(id) {
                 }
             }
         } catch (err) {
-            console.error("Message Upsert Error:", err.message);
-        }
+            }
     });
 
     conn.ev.on("group-participants.update", async ({ id, participants, action }) => {
