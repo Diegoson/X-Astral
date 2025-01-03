@@ -180,28 +180,9 @@ async function sessionAuth(id) {
         const { connection } = update;
         if (connection === "open") {
             console.log("Connection established 👍");
-            const plugins = getPlugins();
-            for (const plugin of plugins) {
-                try {
-                    await Plugin.findOneAndUpdate(
-                        { name: plugin.name },
-                        { status: "loaded", error: null },
-                        { upsert: true, new: true }
-                    );
-                    console.log("Plugin logged to database");
-                } catch (err) {
-                    console.error("Plugin Logging Error:", err.message);
-                }
-            }
-
-            const all_Plugs = await Plugin.find();
-            console.log("Plugins in database:", all_Plugs);
-            const mode = CONFIG.app.mode;
-            const mods = CONFIG.app.mods;
-            const prefix = CONFIG.app.prefix;
-            const mongodb_url = CONFIG.app.mongodb;
+         await getPlugins();
+           const mode = CONFIG.app.mode; const mods = CONFIG.app.mods; const prefix = CONFIG.app.prefix; const mongodb_url = CONFIG.app.mongodb;
             const bot = CONFIG.botname;
-
             const _msg_ = [
                 `*Im Online Now*`,
                 `Mode      : ${mode && mode.toLowerCase() === "private" ? "Private" : "Public"}`,
