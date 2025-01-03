@@ -5,13 +5,11 @@ const {
     makeCacheableSignalKeyStore,
     Browsers,
 } = require("@whiskeysockets/baileys");
-const mongoose = require("mongoose");
 const pino = require("pino");
 const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 const { eval: evaluate } = require("./lib/eval");
-const Plugin = require("./database/plugins");
 const { groups } = require("./database/group");
 const { getPlugins } = require("./database/getPlugins");
 const { maxUP, detectACTION } = require("./database/autolv");
@@ -44,23 +42,7 @@ async function sessionAuth(id) {
 }
 
     async function startBot() {
-        if (!CONFIG?.app?.mongodb) {
-            console.error("MongoDB URL is missing");
-            return;
-        }
-
-        mongoose.connection.on("connected", () => console.log("Connected to MongoDB 🌍"));
-        mongoose.connection.on("error", (err) => console.error("MongoDB Error:", err.message));
-        try {
-            await mongoose.connect(CONFIG.app.mongodb, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            });
-        } catch (error) {
-            console.error("Failed to connect to MongoDB:", error.message);
-            return;
-        }
-
+        await CONFIG.app.DATABASE.sync();
         let { state, saveCreds } = await useMultiFileAuthState(output, pino({ level: "silent" }));
         const conn = makeWASocket({
             version: (await fetchLatestBaileysVersion()).version,
