@@ -1,8 +1,5 @@
 {
 	"name": "bot_name",
-	"description": "",
-	"logo": "",
-	"repository": "",
 	"stack": "container",
 	"success_url": "/",
 	"buildpacks": [
@@ -19,10 +16,6 @@
 		"description": "User ID with sudo permissions for the bot.",
 		"value": "27686881509",
 		"required": false
-	},
-	"MONGODB_URL": {
-		"description": "mongo string url_required",
-		"required": true
 	}
 }
   }
